@@ -1,47 +1,145 @@
+
+//-------------------------------------------------------------
+// config's Phaz3r
+//-------------------------------------------------------------
 var config = {
     type: Phaser.AUTO,
-    width: 1280,
-    height: 720,
+    width: 800,
+    height: 800,
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 200 }
+            fps: 60,
+            gravity: { y: 0 },
+            debug: false
         }
     },
     scene: {
         preload: preload,
-        create: create
+        create: create,
+        update: update
     }
 };
 
+//-------------------------------------------------------------
+// starts the game
+//-------------------------------------------------------------
+//Game fields
+var cursors; //controls
+//makes instances of the classes
 var game = new Phaser.Game(config);
+var player = new playerClass(game,"alive",[0,0],'red');
+var astroid = new astroidClass(game,"large",[0,0],'brown');
 
+//global preload
 function preload ()
 {
-    this.load.setBaseURL('http://labs.phaser.io');
-
-    this.load.image('sky', 'assets/skies/space3.png');
-    this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'assets/particles/red.png');
+    console.log('global preload');
+    player.preload();
+    astroid.preload();
 }
-
+//global create
 function create ()
 {
-    this.add.image(400, 300, 'sky');
+    console.log('global create');
+    cursors = this.input.keyboard.createCursorKeys();
+}
+//global update thats ran evey 1/60th of a second
+function update ()
+{
 
-    var particles = this.add.particles('red');
+    console.log('global update');
+    player.update();
+    astroid.update();
+    
+}
 
-    var emitter = particles.createEmitter({
-        speed: 100,
-        scale: { start: 1, end: 0 },
-        blendMode: 'ADD'
-    });
 
-    var logo = this.physics.add.image(400, 100, 'logo');
 
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
+//-------------------------------------------------------------
+// player class manages all player status and updates
+//-------------------------------------------------------------
+function playerClass(game, status, velocity, color){
+    var game = game;
+    this.status = status;
+    this.velocity = velocity;
+    this.color = color;
 
-    emitter.startFollow(logo);
+    this.preload = function()
+    {
+        console.log('pre-loading player');
+        this.load.image('ship', './img/ship2.png');
+        return;
+    }   
+    this.create = function()
+    {
+        console.log('creating player');
+        player = this.physics.add.image(400, 400, 'ship');
+        player.setAngle(-90);
+        player.setDamping(true);
+        player.setDrag(0.99);
+        player.setMaxVelocity(200);
+
+        cursors = game.input.keyboard.createCursorKeys();
+        return;
+    }
+    this.update = function()
+    {
+        console.log('updating player');
+        // check for forward movement
+        if (cursors.up.isDown)
+        {
+            this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
+        }
+        else
+        {
+            player.setAcceleration(0);
+        }
+        
+        // check for rotation
+        if (cursors.left.isDown)
+        {
+            player.setAngularVelocity(-300);
+        }
+        else if (cursors.right.isDown)
+        {
+            player.setAngularVelocity(300);
+        }
+        else
+        {
+            player.setAngularVelocity(0);
+        }
+        
+        this.physics.world.wrap(player, 32);
+        return;
+    }
+}
+
+
+//-------------------------------------------------------------
+// astroid class manages all astroid status and updates. this should be instancieated to an array of them and moved from there probibly
+//-------------------------------------------------------------
+function astroidClass(game, status, velocity, color) {
+    var game = game;
+    this.status = status;
+    this.velocity = velocity;
+    this.color = color;
+
+    this.preload = function()
+    {
+        console.log('pre-loading astroid');
+        this.load.image('ship', 'img/astroidLarge.png');
+        this.load.image('ship', 'img/astroidMedium.png');
+        this.load.image('ship', 'img/astroidSmall.png');
+    }
+
+    this.create = function()
+    {
+        console.log('creating astroid');
+    }
+
+    this.update = function()
+    {
+        console.log('updating astroid');
+    }
 }
