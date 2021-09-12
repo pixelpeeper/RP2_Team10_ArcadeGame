@@ -25,22 +25,31 @@ var config = {
 // starts the game
 //-------------------------------------------------------------
 //Game fields
+var player;
 var cursors; //controls
 //makes instances of the classes
 var game = new Phaser.Game(config);
-var player = new playerClass(game,"alive",[0,0],'red');
-var astroid = new astroidClass(game,"large",[0,0],'brown');
+var playerInstance = new playerClass(game,"alive",[0,0],'red',player);
+var astroidInstance = new astroidClass(game,"large",[0,0],'brown');
 
 //global preload
 function preload ()
 {
     console.log('global preload');
-    player.preload();
-    astroid.preload();
+    //this pre-loads the graphics into memory and gives it an identifyable name for calling later on
+    this.load.image('ship',"./img/ship2.jpg");
+    this.load.image('astroidLarge', 'img/astroidLarge.png'),
+    this.load.image('astroidMedium', 'img/astroidMedium.png'),
+    this.load.image('astroidSmall', 'img/astroidSmall.png')
+
 }
 //global create
 function create ()
 {
+    //this asigns the images to the player and astroid objects
+    playerInstance.create(this.add.image(0,0,'ship'));
+    astroidInstance.create(this.add.image(0,0,'astroidLarge'),this.add.image(0,0,'astroidMedium'),this.add.image(0,0,'astroidSmall'));
+
     console.log('global create');
     cursors = this.input.keyboard.createCursorKeys();
 }
@@ -49,8 +58,8 @@ function update ()
 {
 
     console.log('global update');
-    player.update();
-    astroid.update();
+    playerInstance.update();
+    astroidInstance.update();
     
 }
 
@@ -59,22 +68,23 @@ function update ()
 //-------------------------------------------------------------
 // player class manages all player status and updates
 //-------------------------------------------------------------
-function playerClass(game, status, velocity, color){
+function playerClass(game, status, velocity, color, player){
     var game = game;
     this.status = status;
     this.velocity = velocity;
     this.color = color;
+    this.player = player;
 
     this.preload = function()
     {
         console.log('pre-loading player');
-        this.load.image('ship', './img/ship2.png');
         return;
     }   
-    this.create = function()
+    this.create = function(img)
     {
+        this.img = img;
         console.log('creating player');
-        player = this.physics.add.image(400, 400, 'ship');
+        player = Phaser.physics.add.image(400, 400, 'ship');
         player.setAngle(-90);
         player.setDamping(true);
         player.setDrag(0.99);
@@ -89,7 +99,7 @@ function playerClass(game, status, velocity, color){
         // check for forward movement
         if (cursors.up.isDown)
         {
-            this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
+            Phaser.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
         }
         else
         {
@@ -110,7 +120,7 @@ function playerClass(game, status, velocity, color){
             player.setAngularVelocity(0);
         }
         
-        this.physics.world.wrap(player, 32);
+        Phaser.physics.world.wrap(player, 32);
         return;
     }
 }
@@ -119,23 +129,24 @@ function playerClass(game, status, velocity, color){
 //-------------------------------------------------------------
 // astroid class manages all astroid status and updates. this should be instancieated to an array of them and moved from there probibly
 //-------------------------------------------------------------
-function astroidClass(game, status, velocity, color) {
+function astroidClass(game, status, velocity, color, player) {
     var game = game;
     this.status = status;
     this.velocity = velocity;
     this.color = color;
+    var player = player;
 
     this.preload = function()
     {
         console.log('pre-loading astroid');
-        this.load.image('ship', 'img/astroidLarge.png');
-        this.load.image('ship', 'img/astroidMedium.png');
-        this.load.image('ship', 'img/astroidSmall.png');
     }
 
-    this.create = function()
+    this.create = function(imgLarge,imgMedium,imgSmall)
     {
         console.log('creating astroid');
+        this.imgLage = imgLarge;
+        this.imgMedium = imgMedium;
+        this.imgSmall = imgSmall;
     }
 
     this.update = function()
