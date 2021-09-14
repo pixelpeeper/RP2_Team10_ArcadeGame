@@ -19,7 +19,6 @@ var game = new Phaser.Game(config);
 var player;
 var cursors;
 var bullets;
-var firebutton;
 
 function preload ()
 {
@@ -39,7 +38,6 @@ function create ()
   //  bullets.setAll('anchor.y', 1);
  //   bullets.setAll('outOfBoundsKill', true);
  //   bullets.setAll('checkWorldBounds', true);
-  fireBullet.bind(this);
 	player = this.physics.add.sprite(400, 400, 'ship');
 	player.displayWidth=50;
 	player.scaleY = player.scaleX;
@@ -50,7 +48,7 @@ function create ()
   cursors = this.input.keyboard.createCursorKeys();
 	//firebutton = this.input.keyboard.addKey(Phaser.keyboard.SPACEBAR);
 }
-function update ()
+function update (time, delta)
 {
 	// check for forward movement
         if (cursors.up.isDown)
@@ -77,34 +75,15 @@ function update ()
         }
 		    if (cursors.down.isDown)
 		    {
-          //  var newbullet = this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-        //    newbullet.body.velocity.y = -400;
         var BULLET_SPEED = 300;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
-        var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y);
+        var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
         newbullet.angle = player.angle;
-        console.log(newbullet.angle);
-        console.log(newbullet)
-      //  this.physics.Arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
-      //  player.physics.arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
-        this.physics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity)
+
+        this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
         newbullet.body.velocity.x += player.body.velocity.x;
       }else{};
 
 
         this.physics.world.wrap(player, 32);
-}
-
-function fireBullet()
-{
-	//var bullet = bullets.getFirstExists(false);
- this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-
-  //  if (bullet)
-  //  {
-        //  And fire it
-		//bullet.create(player.x, player.y + 8, 'bullet');
-    //    bullet.reset(player.x, player.y + 8);
-    //    bullet.body.velocity.y = -400;
-  //  }
 }
