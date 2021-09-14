@@ -46,9 +46,6 @@ function create ()
   //  bullets.setAll('anchor.y', 1);
  //   bullets.setAll('outOfBoundsKill', true);
  //   bullets.setAll('checkWorldBounds', true);
-
-    //creates the player
-    fireBullet.bind(this);
 	player = this.physics.add.sprite(400, 400, 'ship');
 	//player.displayWidth=50;
 	//player.scaleY = player.scaleX;
@@ -73,7 +70,7 @@ function create ()
    // });
    // asteroid.defaults.setVelocityX = 100;
    // asteroid.defaults.setVelocityY = 50;
-    
+
     //asteroids = asteroid.createMultiple({
     //    quantity: 3,
     //    key: asteroid.defaultKey,
@@ -155,7 +152,7 @@ function create ()
         );
         _asteroid1.disableBody(true,true)
         _asteroid2.disableBody(true,true)
-        
+
         //var p = Phaser.Geom.Rectangle.RandomOutside(
         //    new Phaser.Geom.Rectangle(0, 0, 960, 720),
         //    new Phaser.Geom.Rectangle(350, 250, 256, 256)
@@ -164,7 +161,7 @@ function create ()
         //b.setCircle(16);
         //b.body.velocity.x = Phaser.Math.Between(-100, 100);
         //b.body.velocity.y = Phaser.Math.Between(-100, 100);
-        
+
         //this.physics.add.existing(b);
     });
 
@@ -188,9 +185,12 @@ function create ()
     cursors = this.input.keyboard.createCursorKeys();
     //firebutton = this.input.keyboard.addKey(Phaser.keyboard.SPACEBAR);
 }
-function update ()
+var check;
+check = true;
+function update (time, delta)
 {
     // check for forward movement
+
     if (cursors.up.isDown)
     {
         this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
@@ -200,35 +200,32 @@ function update ()
         player.setAcceleration(0);
     }
 
-    // check for rotation
-    if (cursors.left.isDown)
-    {
-        player.setAngularVelocity(-300);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.setAngularVelocity(300);
-    }
-    else
-    {
-        player.setAngularVelocity(0);
-    }
-
-    //fires bullets
-    if (cursors.down.isDown)
-    {
-            //  var newbullet = this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-        //    newbullet.body.velocity.y = -400;
-        var BULLET_SPEED = 300;
+        // check for rotation
+        if (cursors.left.isDown)
+        {
+            player.setAngularVelocity(-300);
+        }
+        else if (cursors.right.isDown)
+        {
+            player.setAngularVelocity(300);
+        }
+        else
+        {
+            player.setAngularVelocity(0);
+        }
+		    if (cursors.down.isDown)
+		    {
+          if(check)
+        {
+        var BULLET_SPEED = 100;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
-        var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y);
+        var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
         newbullet.angle = player.angle;
-        console.log(newbullet.angle);
-        console.log(newbullet)
-        //  this.physics.Arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
-        //  player.physics.arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
-        this.physics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity)
+        this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
         newbullet.body.velocity.x += player.body.velocity.x;
+        check=false;
+        this.time.delayedCall(2000, setfalse, [], this);
+        }
     }else{};
 
 
@@ -238,22 +235,8 @@ function update ()
     //this.physics.world.wrap(randomAsteroids, 32);
     this.physics.world.wrap(asteroidsG, 32);
 }
-
-function fireBullet()
-{
-	//var bullet = bullets.getFirstExists(false);
-    this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-
-  //  if (bullet)
-  //  {
-        //  And fire it
-		//bullet.create(player.x, player.y + 8, 'bullet');
-    //    bullet.reset(player.x, player.y + 8);
-    //    bullet.body.velocity.y = -400;
-  //  }
-}
-
-
+function setfalse()
+{check=true;}
 
 function createAstroid(x, y, vx, vy) {
     var asteroid = asteroidsG.get();
