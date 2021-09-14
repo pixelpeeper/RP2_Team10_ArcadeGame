@@ -185,8 +185,8 @@ function create ()
     cursors = this.input.keyboard.createCursorKeys();
     //firebutton = this.input.keyboard.addKey(Phaser.keyboard.SPACEBAR);
 }
-var check;
-check = true;
+var canshoot;
+canshoot = true;
 function update (time, delta)
 {
     // check for forward movement
@@ -215,16 +215,16 @@ function update (time, delta)
         }
 		    if (cursors.down.isDown)
 		    {
-          if(check)
+          if(canshoot)
         {
-        var BULLET_SPEED = 100;
+        var BULLET_SPEED = 300;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
         var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
         newbullet.angle = player.angle;
         this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
         newbullet.body.velocity.x += player.body.velocity.x;
-        check=false;
-        this.time.delayedCall(2000, setfalse, [], this);
+        canshoot=false;
+        this.time.delayedCall(500, setshoottotrue, [], this);
         }
     }else{};
 
@@ -235,8 +235,8 @@ function update (time, delta)
     //this.physics.world.wrap(randomAsteroids, 32);
     this.physics.world.wrap(asteroidsG, 32);
 }
-function setfalse()
-{check=true;}
+function setshoottotrue()
+{canshoot=true;}
 
 function createAstroid(x, y, vx, vy) {
     var asteroid = asteroidsG.get();
