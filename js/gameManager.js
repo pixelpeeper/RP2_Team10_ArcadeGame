@@ -78,12 +78,16 @@ function update ()
 		    if (cursors.down.isDown)
 		    {
           //  var newbullet = this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-          //  newbullet.body.velocity.y = -400;
+        //    newbullet.body.velocity.y = -400;
         var BULLET_SPEED = 300;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
         var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y);
         newbullet.angle = player.angle;
-        this.physics.Arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
+        console.log(newbullet.angle);
+        console.log(newbullet)
+      //  this.physics.Arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
+      //  player.physics.arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
+        this.physics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity)
         newbullet.body.velocity.x += player.body.velocity.x;
       }else{};
 
