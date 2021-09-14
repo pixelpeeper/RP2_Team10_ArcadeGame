@@ -141,14 +141,14 @@ function create ()
         console.log(_asteroid1);
         //let newVelocity = Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * 2
         createAstroid(
-            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]),
-            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]),
+            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
+            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
             Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
             Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
            //p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100)
         );createAstroid(
-            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]),
-            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]),
+            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
+            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
             Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
             Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
            //p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100)
@@ -261,5 +261,6 @@ function createAstroid(x, y, vx, vy) {
     asteroid.enableBody(true, x, y, true, true)
     asteroid.setVelocity(vx, vy)
     asteroid.setCircle(16);
+    asteroid.setMaxVelocity(200,200)
     console.log('creating new asteroid');
 }
