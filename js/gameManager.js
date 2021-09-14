@@ -26,6 +26,7 @@ var player;
 var cursors;
 var bullets;
 var firebutton;
+var asteroidsG;
 
 function preload ()
 {
@@ -57,64 +58,121 @@ function create ()
     player.setMaxVelocity(200);
     player.setCircle(50);
     player.setMass(2);
+    player.setBounce(1)
 
 
 
     //creates the astroids
-    asteroid = this.physics.add.group({
-        defaultKey: 'asteroid_large',
-        bounceX: 1,
-        bounceY: 1,
-        circle: 64,
-        angularVelocity: 10,
-        mass: 10
-    });
-    asteroid.defaults.setVelocityX = 100;
-    asteroid.defaults.setVelocityY = 50;
+    //asteroid = this.physics.add.group({
+    //    defaultKey: 'asteroid_large',
+    //    bounceX: 1,
+    //    bounceY: 1,
+    //    circle: 64,
+    //    angularVelocity: 10,
+    //    mass: 10
+   // });
+   // asteroid.defaults.setVelocityX = 100;
+   // asteroid.defaults.setVelocityY = 50;
     
-    asteroids = asteroid.createMultiple({
-        quantity: 3,
-        key: asteroid.defaultKey,
-        frame: 0
-    });
-    var PlaceOnCircle = Phaser.Actions.PlaceOnCircle;
-    PlaceOnCircle(asteroids, { x: -200, y: -200, radius: 50 });
+    //asteroids = asteroid.createMultiple({
+    //    quantity: 3,
+    //    key: asteroid.defaultKey,
+   //     frame: 0
+   // });
+   // var PlaceOnCircle = Phaser.Actions.PlaceOnCircle;
+   // PlaceOnCircle(asteroids, { x: -200, y: -200, radius: 50 });
 
-    asteroid.children.each(function (asteroid)
-    {
-        asteroid.setCircle(16);
-    });
+   // asteroid.children.each(function (asteroid)
+   // {
+   //     asteroid.setCircle(16);
+   // });
 
     //generates random astroids
-    randomAsteroids = this.physics.add.group({
+    //randomAsteroids = this.physics.add.group({
+    //    defaultKey: 'asteroid_large',
+    //    bounceX: 1,
+    //    bounceY: 1,
+    //    circle: 16,
+    //    angularVelocity: 10,
+    //    mass: 10
+    //})
+    //for (var i = 0; i < 8; i++) {
+    //    var p = Phaser.Geom.Rectangle.RandomOutside(
+    //        new Phaser.Geom.Rectangle(0, 0, 960, 720),
+    //        new Phaser.Geom.Rectangle(350, 250, 256, 256)
+   //     )
+    //    var b = randomAsteroids.create(p.x, p.y, 'asteroid_large');
+   //     this.physics.add.existing(b);
+   // }
+   // randomAsteroids.children.each(function (asteroid)
+   // {
+   //     asteroid.setCircle(16);
+   //     asteroid.body.velocity.x = Phaser.Math.Between(-100, 100);
+   //     asteroid.body.velocity.y = Phaser.Math.Between(-100, 100);
+   // });
+
+    asteroidsG = this.physics.add.group({
         defaultKey: 'asteroid_large',
+        active: false,
+        visibile: false,
+        enable: false,
         bounceX: 1,
         bounceY: 1,
         circle: 16,
         angularVelocity: 10,
         mass: 10
     })
+
     for (var i = 0; i < 8; i++) {
+        var p = Phaser.Geom.Rectangle.RandomOutside(
+                new Phaser.Geom.Rectangle(0, 0, 960, 720),
+                new Phaser.Geom.Rectangle(350, 250, 256, 256)
+            )
+        createAstroid(p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100))
+    }
+    //sets what collides
+    this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2){
+        console.log('randomAsteroids colidded');
         var p = Phaser.Geom.Rectangle.RandomOutside(
             new Phaser.Geom.Rectangle(0, 0, 960, 720),
             new Phaser.Geom.Rectangle(350, 250, 256, 256)
         )
-        var b = randomAsteroids.create(p.x, p.y, 'asteroid_large');
-        this.physics.add.existing(b);
-    }
-    randomAsteroids.children.each(function (asteroid)
-    {
-        asteroid.setCircle(16);
-        asteroid.body.velocity.x = Phaser.Math.Between(-100, 100);
-        asteroid.body.velocity.y = Phaser.Math.Between(-100, 100);
+        console.log(_asteroid1.body.velocity.y);
+        createAstroid(
+            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]),
+            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]),
+            Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]),
+            Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]),
+           //p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100)
+        );
+        
+        //var p = Phaser.Geom.Rectangle.RandomOutside(
+        //    new Phaser.Geom.Rectangle(0, 0, 960, 720),
+        //    new Phaser.Geom.Rectangle(350, 250, 256, 256)
+        //)
+        //var b = randomAsteroids.create(p.x, p.y, 'asteroid_medium');
+        //b.setCircle(16);
+        //b.body.velocity.x = Phaser.Math.Between(-100, 100);
+        //b.body.velocity.y = Phaser.Math.Between(-100, 100);
+        
+        //this.physics.add.existing(b);
     });
-            
-    //sets what collides
-    this.physics.add.collider(randomAsteroids, randomAsteroids);
-    this.physics.add.collider(randomAsteroids, asteroid);
-    this.physics.add.collider(randomAsteroids, player);
-    this.physics.add.collider(asteroid, asteroid);
-    this.physics.add.collider(asteroid, player);
+
+    //this.physics.add.collider(randomAsteroids, asteroid);
+   // this.physics.add.collider(randomAsteroids, player, function () {
+   //     console.log('randomAsteroids coliddeed with player')
+   // });
+    //this.
+    //this.physics.add.collider(randomAsteroids, randomAsteroids);
+    this.physics.add.collider(asteroidsG, player, function () {
+        console.log('asteroidsG coliddeed with player')
+    });
+    //this.
+    //this.physics.add.collider(asteroidsG, asteroidsG, function () {
+    //    console.log('asteroidsG coliddeed with asteroidsG')
+    //});
+    //this.physics.add.collider(asteroid, asteroid);
+   // this.physics.add.collider(asteroid, player);
 
     //handels input
     cursors = this.input.keyboard.createCursorKeys();
@@ -166,8 +224,9 @@ function update ()
 
     //wraps objects from one side to the other of the screen
     this.physics.world.wrap(player, 32);
-    this.physics.world.wrap(asteroid, 32);
-    this.physics.world.wrap(randomAsteroids, 32);
+   // this.physics.world.wrap(asteroid, 32);
+    //this.physics.world.wrap(randomAsteroids, 32);
+    this.physics.world.wrap(asteroidsG, 32);
 }
 
 function fireBullet()
@@ -182,4 +241,15 @@ function fireBullet()
     //    bullet.reset(player.x, player.y + 8);
     //    bullet.body.velocity.y = -400;
   //  }
+}
+
+
+
+function createAstroid(x, y, vx, vy) {
+    var asteroid = asteroidsG.get();
+    //if (!asteroid) return;
+    asteroid.enableBody(true, x, y, true, true)
+    asteroid.setVelocity(vx, vy)
+    asteroid.setCircle(16);
+    console.log('creating new asteroid');
 }
