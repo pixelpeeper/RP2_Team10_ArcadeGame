@@ -96,9 +96,25 @@ function create ()
     })
     for (var i = 0; i < 8; i++) {
         var p = Phaser.Geom.Rectangle.RandomOutside(
+            new Phaser.Geom.Rectangle(0, 0, 960, 720),
+            new Phaser.Geom.Rectangle(350, 250, 256, 256)
+        )
+        var b = randomAsteroids.create(p.x, p.y, 'ball');
+        this.physics.add.existing(b);
+    }
+    randomAsteroids.children.each(function (asteroid)
+    {
+        asteroid.setCircle(16);
+        asteroid.body.velocity.x = Phaser.Math.Between(-100, 100);
+        asteroid.body.velocity.y = Phaser.Math.Between(-100, 100);
+    });
+            
     //sets what collides
+    this.physics.add.collider(randomAsteroids, randomAsteroids);
+    this.physics.add.collider(randomAsteroids, asteroid);
+    this.physics.add.collider(randomAsteroids, player);
     this.physics.add.collider(asteroid, asteroid);
-    this.physics.add.collider(player, asteroid);
+    this.physics.add.collider(asteroid, player);
 
     //handels input
     cursors = this.input.keyboard.createCursorKeys();
@@ -151,6 +167,7 @@ function update ()
     //wraps objects from one side to the other of the screen
     this.physics.world.wrap(player, 32);
     this.physics.world.wrap(asteroid, 32);
+    this.physics.world.wrap(randomAsteroids, 32);
 }
 
 function fireBullet()
