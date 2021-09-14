@@ -85,6 +85,17 @@ function create ()
         asteroid.setCircle(16);
     });
 
+    //generates random astroids
+    randomAsteroids = this.physics.add.group({
+        defaultKey: 'asteroid_large',
+        bounceX: 1,
+        bounceY: 1,
+        circle: 16,
+        angularVelocity: 10,
+        mass: 10
+    })
+    for (var i = 0; i < 8; i++) {
+        var p = Phaser.Geom.Rectangle.RandomOutside(
     //sets what collides
     this.physics.add.collider(asteroid, asteroid);
     this.physics.add.collider(player, asteroid);
