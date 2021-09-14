@@ -99,7 +99,7 @@ function create ()
             new Phaser.Geom.Rectangle(0, 0, 960, 720),
             new Phaser.Geom.Rectangle(350, 250, 256, 256)
         )
-        var b = randomAsteroids.create(p.x, p.y, 'ball');
+        var b = randomAsteroids.create(p.x, p.y, 'asteroid_large');
         this.physics.add.existing(b);
     }
     randomAsteroids.children.each(function (asteroid)
