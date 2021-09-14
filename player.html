@@ -23,7 +23,11 @@
             arcade: {
                 fps: 60,
                 gravity: { y: 0 },
-                debug: false
+                debug: true,
+                debugShowBody: true,
+                debugShowAngularVelocity: true,
+                debugAngularVelocityColor: 0xffff00,
+                debugBodyColor: 0x0000ff
             }
         },
         scene: {
@@ -35,6 +39,8 @@
 
     //Game fields
     var player;
+    var asteroid;
+    var asteroids;
     var cursors; //controls
 
     var game = new Phaser.Game(config);
@@ -42,6 +48,7 @@
     function preload ()
     {
         this.load.image('ship', 'assets/ship2.png');
+        this.load.image('asteroid_large', 'assets/asteroid_large.png')
     }
 
     function create ()
@@ -51,6 +58,42 @@
         player.setDamping(true);
         player.setDrag(0.99);
         player.setMaxVelocity(200);
+        player.setCircle(32);
+        player.setMass(2);
+
+        // asteroid = this.physics.add.image(200, 200, 'asteroid_large');
+        // asteroid.setMaxVelocity(100);
+        // asteroid.setAngularVelocity(10);
+        // asteroid.setVelocity(10, 0);
+        // asteroid.setBounce(1);
+        // asteroid.setCircle(64);
+
+        asteroid = this.physics.add.group({
+            defaultKey: 'asteroid_large',
+            bounceX: 1,
+            bounceY: 1,
+            circle: 64,
+            angularVelocity: 10,
+            mass: 10
+        });
+        asteroid.defaults.setVelocityX = 100;
+        asteroid.defaults.setVelocityY = 50;
+        
+        asteroids = asteroid.createMultiple({
+            quantity: 3,
+            key: asteroid.defaultKey,
+            frame: 0
+        });
+        var PlaceOnCircle = Phaser.Actions.PlaceOnCircle;
+        PlaceOnCircle(asteroids, { x: -200, y: -200, radius: 50 });
+
+        asteroid.children.each(function (asteroid)
+        {
+            asteroid.setCircle(64);
+        });
+
+        //add colliders
+        this.physics.add.collider(player, asteroid);
 
         cursors = this.input.keyboard.createCursorKeys();
     }
@@ -82,6 +125,7 @@
         }
         
         this.physics.world.wrap(player, 32);
+        this.physics.world.wrap(asteroid, 32);
     }
 
 </script>
