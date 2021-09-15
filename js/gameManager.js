@@ -24,8 +24,6 @@ var config = {
 var game = new Phaser.Game(config);
 var player;
 var cursors;
-
-var firebutton;
 var asteroidsG;
 
 function preload ()
@@ -108,43 +106,39 @@ function create ()
     //End collision for small asteroids
     //startcollision check for medium asteroids only
     this.physics.add.collider(asteroidsM, asteroidsM, function (_asteroid1, _asteroid2){
-        createnewsmallasteroids(_asteroid1,_asteroid2);
-      });
+       createnewsmallasteroids(_asteroid1,_asteroid2);
+    });
     //End collision for medium asteroids
     //startcollision check for big asteroids only
-    this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2)
-      {
-        createnewmediumasteroids(_asteroid1,_asteroid2);
-      });
+   this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2){
+       createnewmediumasteroids(_asteroid1,_asteroid2);
+    });
       //End collision for big asteroids
       // Begin collision for small and big rocks only
-      this.physics.add.collider(asteroidsS , asteroidsG, function (_asteroid1, _asteroid2){
-          createmediumasteroids(_asteroid1,_asteroid2);
-        });
+    this.physics.add.collider(asteroidsS , asteroidsG, function (_asteroid1, _asteroid2){
+        createnewmediumasteroids(_asteroid1,_asteroid2);
+    });
       // End collision for small and big rocks
       // start collision for medium and big rocks
-      this.physics.add.collider(asteroidsM , asteroidsG, function (_asteroid1, _asteroid2){
-          createmediumasteroids(_asteroid1,_asteroid2);
-        });
+    this.physics.add.collider(asteroidsM , asteroidsG, function (_asteroid1, _asteroid2){
+        createnewmediumasteroids(_asteroid1,_asteroid2);
+    });
       // end collision for medium and big rocks
       // start collision for small and medium rocks
-      this.physics.add.collider(asteroidsS, asteroidsM , function (_asteroid1, _asteroid2){
-          createnewsmallasteroids(_asteroid1,_asteroid2);
-        });
-
-      // end the collision for medium and large rocks
-
+    this.physics.add.collider(asteroidsS, asteroidsM , function (_asteroid1, _asteroid2){
+        createnewsmallasteroids(_asteroid1,_asteroid2);
+    });
     //large asteroid collision with player
     this.physics.add.collider(asteroidsG, player, function () {
-        console.log('asteroidsG coliddeed with player')
+        console.log('asteroidsG collided with player'); // you  can add the lives logic here if you want
     });
     //medium asteroid collision with player
     this.physics.add.collider(asteroidsM, player, function () {
-        console.log('asteroidsM coliddeed with player')
+        console.log('asteroidsM collided with player');  // you  can add the lives logic here if you want
     });
     //small asteroid collision with player
     this.physics.add.collider(asteroidsS, player, function () {
-        console.log('asteroidsS coliddeed with player')
+        console.log('asteroidsS collided with player');  // you  can add the lives logic here if you want
     });
     //handels input
     cursors = this.input.keyboard.createCursorKeys();
@@ -154,7 +148,6 @@ canshoot = true;
 function update (time, delta)
 {
     // check for forward movement
-
     if (cursors.up.isDown)
     {
         this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
@@ -188,32 +181,36 @@ function update (time, delta)
         this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
         newbullet.body.velocity.x += player.body.velocity.x;
         canshoot=false;
-        this.time.delayedCall(500, setshoottotrue, [], this);
+        //check for bullet collision with small asteroid
         this.physics.add.collider(newbullet, asteroidsS, function (_bullet, _asteroidhit)
         {
-          console.log('bullet and small ast');
          _asteroidhit.disableBody(true,true);
-         _bullet.disableBody(true,true);
+         _bullet.disableBody(true,true);  // you  can add the score logic here if you want
         });
+        //check for bullet collision with medium asteroid
         this.physics.add.collider(newbullet, asteroidsM, function (_bullet, _asteroidhit)
         {
-          console.log('bullet and med ast');
         createnewsmallasteroids(_bullet, _asteroidhit);
-        _bullet.disableBody(true,true);
+        _bullet.disableBody(true,true);  // you  can add the score logic here if you want
         });
+        //check for bullet collision with large asteroid
         this.physics.add.collider(newbullet, asteroidsG, function (_bullet, _asteroidhit)
         {
         console.log("Shockwave logic, big asteroid hit");
-        _bullet.disableBody(true,true);
+        createnewmediumasteroids(_bullet, _asteroidhit); // technically we dont want this feature, this is just for first playable.
+        _bullet.disableBody(true,true);  // you  can add the score logic here if you want
         });
+        this.time.delayedCall(500, setshoottotrue, [], this);
         }
+
     }else{};
 
 
 
     this.physics.world.wrap(player, 32);
-
     this.physics.world.wrap(asteroidsG, 32);
+    this.physics.world.wrap(asteroidsM, 32);
+    this.physics.world.wrap(asteroidsS, 32);
 }
 // Below function will create small asteroids on collision
 function createnewsmallasteroids(_asteroid1,_asteroid2)
