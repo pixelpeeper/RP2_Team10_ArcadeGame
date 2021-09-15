@@ -149,9 +149,12 @@ function create ()
     //handels input
     cursors = this.input.keyboard.createCursorKeys();
 }
-function update ()
+var canshoot;
+canshoot = true;
+function update (time, delta)
 {
     // check for forward movement
+
     if (cursors.up.isDown)
     {
         this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
@@ -161,29 +164,31 @@ function update ()
         player.setAcceleration(0);
     }
 
-    // check for rotation
-    if (cursors.left.isDown)
-    {
-        player.setAngularVelocity(-300);
-    }
-    else if (cursors.right.isDown)
-    {
-        player.setAngularVelocity(300);
-    }
-    else
-    {
-        player.setAngularVelocity(0);
-    }
-    //fires bullets
-    if (cursors.down.isDown)
-    {
-
+        // check for rotation
+        if (cursors.left.isDown)
+        {
+            player.setAngularVelocity(-300);
+        }
+        else if (cursors.right.isDown)
+        {
+            player.setAngularVelocity(300);
+        }
+        else
+        {
+            player.setAngularVelocity(0);
+        }
+		    if (cursors.down.isDown)
+		    {
+          if(canshoot)
+        {
         var BULLET_SPEED = 300;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
-        var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y, 'bullet');
+        var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
         newbullet.angle = player.angle;
-        this.physics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity)
+        this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
         newbullet.body.velocity.x += player.body.velocity.x;
+        canshoot=false;
+        this.time.delayedCall(500, setshoottotrue, [], this);
         this.physics.add.collider(newbullet, asteroidsS, function (_bullet, _asteroidhit)
         {
           console.log('bullet and small ast');
@@ -201,7 +206,7 @@ function update ()
         console.log("Shockwave logic, big asteroid hit");
         _bullet.disableBody(true,true);
         });
-
+        }
     }else{};
 
 
@@ -289,3 +294,6 @@ function createAstroid(x, y, vx, vy)
       astroids.setMaxVelocity(200,200);
     }
 }
+
+function setshoottotrue()
+{canshoot=true;}
