@@ -24,34 +24,21 @@ var config = {
 var game = new Phaser.Game(config);
 var player;
 var cursors;
-var bullets;
+
 var firebutton;
 var asteroidsG;
 
 function preload ()
 {
-    this.load.image('bullet', 'images/Bullet.png');
+  this.load.image('bullet', 'images/Bullet.png');
 	this.load.image('ship', 'images/Spaceship1.png');
+  this.load.image('asteroidmedium', 'images/Asteriod1.png');
+  this.load.image('asteroidlarge', 'images/Asteriod2.png');
 }
 
 function create ()
 {
-    //creates bullets
-	bullets = this.add.group();
-    bullets.enableBody = true;
-    bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    bullets.createMultiple(30, 'bullet');
-
-//    bullets.setAll('anchor.x', 0.5);
-  //  bullets.setAll('anchor.y', 1);
- //   bullets.setAll('outOfBoundsKill', true);
- //   bullets.setAll('checkWorldBounds', true);
-
-    //creates the player
-    fireBullet.bind(this);
-	player = this.physics.add.sprite(400, 400, 'ship');
-	//player.displayWidth=50;
-	//player.scaleY = player.scaleX;
+    player = this.physics.add.sprite(400, 400, 'ship');
     player.setAngle(-90);
     player.setDamping(true);
     player.setDrag(0.99);
@@ -59,58 +46,13 @@ function create ()
     player.setCircle(50);
     player.setMass(2);
     player.setBounce(1)
-
-
-
-    //creates the astroids
-    //asteroid = this.physics.add.group({
-    //    defaultKey: 'asteroid_large',
-    //    bounceX: 1,
-    //    bounceY: 1,
-    //    circle: 64,
-    //    angularVelocity: 10,
-    //    mass: 10
-   // });
-   // asteroid.defaults.setVelocityX = 100;
-   // asteroid.defaults.setVelocityY = 50;
-    
-    //asteroids = asteroid.createMultiple({
-    //    quantity: 3,
-    //    key: asteroid.defaultKey,
-   //     frame: 0
-   // });
-   // var PlaceOnCircle = Phaser.Actions.PlaceOnCircle;
-   // PlaceOnCircle(asteroids, { x: -200, y: -200, radius: 50 });
-
-   // asteroid.children.each(function (asteroid)
-   // {
-   //     asteroid.setCircle(16);
-   // });
-
-    //generates random astroids
-    //randomAsteroids = this.physics.add.group({
-    //    defaultKey: 'asteroid_large',
-    //    bounceX: 1,
-    //    bounceY: 1,
-    //    circle: 16,
-    //    angularVelocity: 10,
-    //    mass: 10
-    //})
-    //for (var i = 0; i < 8; i++) {
-    //    var p = Phaser.Geom.Rectangle.RandomOutside(
-    //        new Phaser.Geom.Rectangle(0, 0, 960, 720),
-    //        new Phaser.Geom.Rectangle(350, 250, 256, 256)
-   //     )
-    //    var b = randomAsteroids.create(p.x, p.y, 'asteroid_large');
-   //     this.physics.add.existing(b);
-   // }
-   // randomAsteroids.children.each(function (asteroid)
-   // {
-   //     asteroid.setCircle(16);
-   //     asteroid.body.velocity.x = Phaser.Math.Between(-100, 100);
-   //     asteroid.body.velocity.y = Phaser.Math.Between(-100, 100);
-   // });
-
+    this.data.set('lives', 5);
+    this.data.set('score', 0);
+    var text = this.add.text(80,120,'',{font: '32px Courier', fill: '#00ff00'});
+    text.setText([
+      'Lives: ' + this.data.get('lives'),
+      'Score: ' + this.data.get('score')
+    ]);
     asteroidsG = this.physics.add.group({
         defaultKey: 'asteroid_large',
         frameQuantity: 12,
@@ -121,7 +63,34 @@ function create ()
         bounceY: 1,
         circle: 16,
         angularVelocity: 10,
-        mass: 10
+        mass: 10,
+        maxSize: 12
+    })
+    asteroidsM = this.physics.add.group({
+        defaultKey: 'asteroid_medium',
+        frameQuantity: 12,
+        active: false,
+        visibile: false,
+        enable: false,
+        bounceX: 1,
+        bounceY: 1,
+        circle: 16,
+        angularVelocity: 10,
+        mass: 10,
+        maxSize: 12
+    })
+    asteroidsS = this.physics.add.group({
+        defaultKey: 'asteroid_small',
+        frameQuantity: 12,
+        active: false,
+        visibile: false,
+        enable: false,
+        bounceX: 1,
+        bounceY: 1,
+        circle: 16,
+        angularVelocity: 10,
+        mass: 10,
+        maxSize: -1
     })
 
     for (var i = 0; i < 8; i++) {
@@ -131,62 +100,54 @@ function create ()
             )
         createAstroid(p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100))
     }
-    //sets what collides
-    this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2){
-        console.log('randomAsteroids colidded');
-        var p = Phaser.Geom.Rectangle.RandomOutside(
-            new Phaser.Geom.Rectangle(0, 0, 960, 720),
-            new Phaser.Geom.Rectangle(350, 250, 256, 256)
-        )
-        console.log(_asteroid1);
-        //let newVelocity = Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * 2
-        createAstroid(
-            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-            Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-            Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-           //p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100)
-        );createAstroid(
-            Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-            Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-            Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-            Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-           //p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100)
-        );
-        _asteroid1.disableBody(true,true)
-        _asteroid2.disableBody(true,true)
-        
-        //var p = Phaser.Geom.Rectangle.RandomOutside(
-        //    new Phaser.Geom.Rectangle(0, 0, 960, 720),
-        //    new Phaser.Geom.Rectangle(350, 250, 256, 256)
-        //)
-        //var b = randomAsteroids.create(p.x, p.y, 'asteroid_medium');
-        //b.setCircle(16);
-        //b.body.velocity.x = Phaser.Math.Between(-100, 100);
-        //b.body.velocity.y = Phaser.Math.Between(-100, 100);
-        
-        //this.physics.add.existing(b);
-    });
 
-    //this.physics.add.collider(randomAsteroids, asteroid);
-   // this.physics.add.collider(randomAsteroids, player, function () {
-   //     console.log('randomAsteroids coliddeed with player')
-   // });
-    //this.
-    //this.physics.add.collider(randomAsteroids, randomAsteroids);
+    //startcollision check for small asteroids only
+    this.physics.add.collider(asteroidsS, asteroidsS, function (_asteroid1, _asteroid2){
+        console.log('small and small Asteroids colidded');
+      });
+    //End collision for small asteroids
+    //startcollision check for medium asteroids only
+    this.physics.add.collider(asteroidsM, asteroidsM, function (_asteroid1, _asteroid2){
+        createnewsmallasteroids(_asteroid1,_asteroid2);
+      });
+    //End collision for medium asteroids
+    //startcollision check for big asteroids only
+    this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2)
+      {
+        createnewmediumasteroids(_asteroid1,_asteroid2);
+      });
+      //End collision for big asteroids
+      // Begin collision for small and big rocks only
+      this.physics.add.collider(asteroidsS , asteroidsG, function (_asteroid1, _asteroid2){
+          createmediumasteroids(_asteroid1,_asteroid2);
+        });
+      // End collision for small and big rocks
+      // start collision for medium and big rocks
+      this.physics.add.collider(asteroidsM , asteroidsG, function (_asteroid1, _asteroid2){
+          createmediumasteroids(_asteroid1,_asteroid2);
+        });
+      // end collision for medium and big rocks
+      // start collision for small and medium rocks
+      this.physics.add.collider(asteroidsS, asteroidsM , function (_asteroid1, _asteroid2){
+          createnewsmallasteroids(_asteroid1,_asteroid2);
+        });
+
+      // end the collision for medium and large rocks
+
+    //large asteroid collision with player
     this.physics.add.collider(asteroidsG, player, function () {
         console.log('asteroidsG coliddeed with player')
     });
-    //this.
-    //this.physics.add.collider(asteroidsG, asteroidsG, function () {
-    //    console.log('asteroidsG coliddeed with asteroidsG')
-    //});
-    //this.physics.add.collider(asteroid, asteroid);
-   // this.physics.add.collider(asteroid, player);
-
+    //medium asteroid collision with player
+    this.physics.add.collider(asteroidsM, player, function () {
+        console.log('asteroidsM coliddeed with player')
+    });
+    //small asteroid collision with player
+    this.physics.add.collider(asteroidsS, player, function () {
+        console.log('asteroidsS coliddeed with player')
+    });
     //handels input
     cursors = this.input.keyboard.createCursorKeys();
-    //firebutton = this.input.keyboard.addKey(Phaser.keyboard.SPACEBAR);
 }
 function update ()
 {
@@ -213,54 +174,118 @@ function update ()
     {
         player.setAngularVelocity(0);
     }
-
     //fires bullets
     if (cursors.down.isDown)
     {
-            //  var newbullet = this.physics.add.sprite(player.x, player.y + 5, 'bullet');
-        //    newbullet.body.velocity.y = -400;
+
         var BULLET_SPEED = 300;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
-        var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y);
+        var newbullet = this.physics.add.sprite(player.x + bulletOffset, player.y, 'bullet');
         newbullet.angle = player.angle;
-        console.log(newbullet.angle);
-        console.log(newbullet)
-        //  this.physics.Arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
-        //  player.physics.arcade.ArcadePhysics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity);
         this.physics.velocityFromAngle(newbullet.angle - 90, BULLET_SPEED, newbullet.body.velocity)
         newbullet.body.velocity.x += player.body.velocity.x;
+        this.physics.add.collider(newbullet, asteroidsS, function (_bullet, _asteroidhit)
+        {
+          console.log('bullet and small ast');
+         _asteroidhit.disableBody(true,true);
+         _bullet.disableBody(true,true);
+        });
+        this.physics.add.collider(newbullet, asteroidsM, function (_bullet, _asteroidhit)
+        {
+          console.log('bullet and med ast');
+        createnewsmallasteroids(_bullet, _asteroidhit);
+        _bullet.disableBody(true,true);
+        });
+        this.physics.add.collider(newbullet, asteroidsG, function (_bullet, _asteroidhit)
+        {
+        console.log("Shockwave logic, big asteroid hit");
+        _bullet.disableBody(true,true);
+        });
+
     }else{};
 
 
-    //wraps objects from one side to the other of the screen
+
     this.physics.world.wrap(player, 32);
-   // this.physics.world.wrap(asteroid, 32);
-    //this.physics.world.wrap(randomAsteroids, 32);
+
     this.physics.world.wrap(asteroidsG, 32);
 }
-
-function fireBullet()
+// Below function will create small asteroids on collision
+function createnewsmallasteroids(_asteroid1,_asteroid2)
 {
-	//var bullet = bullets.getFirstExists(false);
-    this.physics.add.sprite(player.x, player.y + 5, 'bullet');
+  createsmallasteroids(
+      Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
+      Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
+      Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
+      Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
 
-  //  if (bullet)
-  //  {
-        //  And fire it
-		//bullet.create(player.x, player.y + 8, 'bullet');
-    //    bullet.reset(player.x, player.y + 8);
-    //    bullet.body.velocity.y = -400;
-  //  }
+  );
+  _asteroid1.disableBody(true,true);
+  _asteroid2.disableBody(true,true);
+}
+// Below function will create medium asteroids on collision
+function createnewmediumasteroids(_asteroid1,_asteroid2)
+{
+  createmediumasteroids(
+      Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
+      Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
+      Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
+      Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
+
+  );
+  _asteroid1.disableBody(true,true);
+  _asteroid2.disableBody(true,true);
+}
+//actual function that creates small asteroids only
+function createsmallasteroids(x, y, vx, vy)
+{
+  var astroids = asteroidsS.get();
+  if(!astroids) return;
+  astroids.enableBody(true, x, y, true, true);
+  astroids.setVelocity(vx, vy);
+  astroids.setCircle(16);
+  astroids.setMaxVelocity(200,200);
+}
+//actual function that creates medium asteroids only
+function createmediumasteroids(x, y, vx, vy)
+{
+  var astroidM = asteroidsM.get();
+  if(!astroidM) return;
+  astroidM.enableBody(true, x, y, true, true);
+  astroidM.setVelocity(vx, vy);
+  astroidM.setCircle(16);
+  astroidM.setMaxVelocity(200,200);
 }
 
-
-
-function createAstroid(x, y, vx, vy) {
+// create all asteroids to begin the game
+function createAstroid(x, y, vx, vy)
+{
     var asteroid = asteroidsG.get();
-    if (!asteroid) return;
-    asteroid.enableBody(true, x, y, true, true)
-    asteroid.setVelocity(vx, vy)
-    asteroid.setCircle(16);
-    asteroid.setMaxVelocity(200,200)
-    console.log('creating new asteroid');
+    var astroidM = asteroidsM.get();
+    var astroids = asteroidsS.get();
+    if (!asteroid | !astroidM | !astroids) return;
+    if(asteroid)
+    {
+      asteroid.enableBody(true, x, y, true, true);
+      asteroid.setVelocity(vx, vy);
+      asteroid.setCircle(16);
+      asteroid.setMaxVelocity(200,200);
+
+    }
+    if(astroidM)
+    {
+      astroidM.enableBody(true, x, y, true, true);
+      astroidM.setVelocity(vx, vy);
+      astroidM.setCircle(16);
+      astroidM.setMaxVelocity(200,200);
+
+    }
+    if(astroids)
+    {
+
+      astroids.enableBody(true, x, y, true, true);
+      astroids.setVelocity(vx, vy);
+      astroids.setCircle(16);
+      astroids.setMaxVelocity(200,200);
+    }
 }
