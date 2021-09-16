@@ -4,6 +4,10 @@ var config = {
     type: Phaser.AUTO,
     width: 960,
     height: 720,
+	antialias: true,
+	scale: {
+        mode: Phaser.Scale.FIT
+    },
     physics: {
         default: 'arcade',
         arcade: {

@@ -30,7 +30,7 @@ class pauseScreen extends Phaser.Scene {
 		this.add.image(gameDimentions.x/2, 			gameDimentions.y/2 + 27.5	+ 250, 	'spacebar');
 		this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows');
 		//spacebar text
-		this.shoot = this.add.text(gameDimentions.x/2,		gameDimentions.y/2 + 275,	'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#ff0000',fontFamily: 'Arial'});
+		this.shoot = this.add.text(gameDimentions.x/2,		gameDimentions.y/2 + 275,	'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
 		this.shoot.setOrigin(0.5,0.5);
 		//start game text
 		this.start = this.add.text(gameDimentions.x/2,		gameDimentions.y/2,			'GAME PAUSED', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
