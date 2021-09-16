@@ -20,12 +20,11 @@ var config = {
 		update: update,
     }
 };
-
 var game = new Phaser.Game(config);
 var player;
 var cursors;
 var asteroidsG;
-
+var maxsizeofasteroids = 12;
 function preload ()
 {
   this.load.image('bullet', 'images/Bullet.png');
@@ -36,6 +35,7 @@ function preload ()
 
 function create ()
 {
+
     player = this.physics.add.sprite(400, 400, 'ship');
     player.setAngle(-90);
     player.setDamping(true);
@@ -46,10 +46,12 @@ function create ()
     player.setBounce(1)
     this.data.set('lives', 5);
     this.data.set('score', 0);
+    this.data.set('wave', 1);
     var text = this.add.text(80,120,'',{font: '32px Courier', fill: '#00ff00'});
     text.setText([
       'Lives: ' + this.data.get('lives'),
-      'Score: ' + this.data.get('score')
+      'Score: ' + this.data.get('score'),
+      'Wave: ' + this.data.get('wave')
     ]);
     asteroidsG = this.physics.add.group({
         defaultKey: 'asteroid_large',
@@ -91,13 +93,7 @@ function create ()
         maxSize: -1
     })
 
-    for (var i = 0; i < 8; i++) {
-        var p = Phaser.Geom.Rectangle.RandomOutside(
-                new Phaser.Geom.Rectangle(0, 0, 960, 720),
-                new Phaser.Geom.Rectangle(350, 250, 256, 256)
-            )
-        createAstroid(p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100))
-    }
+    startingasteroidcreation(maxsizeofasteroids);
 
     //startcollision check for small asteroids only
     this.physics.add.collider(asteroidsS, asteroidsS, function (_asteroid1, _asteroid2){
@@ -141,6 +137,7 @@ function create ()
         console.log('asteroidsS collided with player');  // you  can add the lives logic here if you want
     });
     //handels input
+
     cursors = this.input.keyboard.createCursorKeys();
 }
 var canshoot;
@@ -174,7 +171,7 @@ function update (time, delta)
 		    {
           if(canshoot)
         {
-        var BULLET_SPEED = 300;
+        var BULLET_SPEED = 500;
         var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
         var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
         newbullet.angle = player.angle;
@@ -204,14 +201,35 @@ function update (time, delta)
         }
 
     }else{};
-
-
+    if(asteroidsG.getFirstAlive() == null && asteroidsM.getFirstAlive() == null && asteroidsS.getFirstAlive() == null)
+    {
+      asteroidsS.setActive();
+      asteroidsM.setActive();
+      asteroidsG.setActive();
+      maxsizeofasteroids += 5;
+      startingasteroidcreation(maxsizeofasteroids);
+      console.log(asteroidsS);
+    //  printwavecompleted();
+    }
 
     this.physics.world.wrap(player, 32);
     this.physics.world.wrap(asteroidsG, 32);
     this.physics.world.wrap(asteroidsM, 32);
     this.physics.world.wrap(asteroidsS, 32);
 }
+
+function startingasteroidcreation(maxsizeofasteroids)
+{
+  for (var i = 0; i < maxsizeofasteroids; i++) {
+
+      var p = Phaser.Geom.Rectangle.RandomOutside(
+              new Phaser.Geom.Rectangle(0, 0, 960, 720),
+              new Phaser.Geom.Rectangle(350, 250, 256, 256)
+          )
+      createAstroid(p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100))
+  }
+}
+
 // Below function will create small asteroids on collision
 function createnewsmallasteroids(_asteroid1,_asteroid2)
 {
@@ -268,6 +286,7 @@ function createAstroid(x, y, vx, vy)
     if (!asteroid | !astroidM | !astroids) return;
     if(asteroid)
     {
+      console.log("Big asteroids are created");
       asteroid.enableBody(true, x, y, true, true);
       asteroid.setVelocity(vx, vy);
       asteroid.setCircle(16);
@@ -284,7 +303,6 @@ function createAstroid(x, y, vx, vy)
     }
     if(astroids)
     {
-
       astroids.enableBody(true, x, y, true, true);
       astroids.setVelocity(vx, vy);
       astroids.setCircle(16);
@@ -294,3 +312,11 @@ function createAstroid(x, y, vx, vy)
 
 function setshoottotrue()
 {canshoot=true;}
+
+function printwavecompleted()
+{
+  var wavecompletetext = this.add.text(150,70,'',{font: '32px Courier', fill: '#00ff00'});
+  wavecompletetext.setText([
+    'Wave ' + this.data.get('wave') + ' completed'
+  ]);
+}
