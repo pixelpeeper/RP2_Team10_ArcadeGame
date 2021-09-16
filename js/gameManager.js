@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 960,
-    height: 720,
+    width: 800,
+    height: 600,
     physics: {
         default: 'arcade',
         arcade: {
@@ -17,286 +17,449 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-		update: update,
+        update: update
     }
 };
+var cursors; //controls
 
 var game = new Phaser.Game(config);
-var player;
-var cursors;
-var asteroidsG;
 
 function preload ()
 {
-  this.load.image('bullet', 'images/Bullet.png');
-	this.load.image('ship', 'images/Spaceship1.png');
-  this.load.image('asteroid_medium', 'images/Asteriod1.png');
-  this.load.image('asteroid_large', 'images/Asteriod2.png');
+    this.load.image('ship', 'images/Spaceship1.png');
+    //this.load.image('asteroid_large', 'assets/asteroid_large.png')
 }
 
 function create ()
 {
-    player = this.physics.add.sprite(400, 400, 'ship');
-    player.setAngle(-90);
-    player.setDamping(true);
-    player.setDrag(0.99);
-    player.setMaxVelocity(200);
-    player.setCircle(50);
-    player.setMass(2);
-    player.setBounce(1)
-    this.data.set('lives', 5);
-    this.data.set('score', 0);
-    var text = this.add.text(80,120,'',{font: '32px Courier', fill: '#00ff00'});
-    text.setText([
-      'Lives: ' + this.data.get('lives'),
-      'Score: ' + this.data.get('score')
-    ]);
-    asteroidsG = this.physics.add.group({
-        defaultKey: 'asteroid_large',
-        frameQuantity: 12,
-        active: false,
-        visibile: false,
-        enable: false,
-        bounceX: 1,
-        bounceY: 1,
-        circle: 16,
-        angularVelocity: 10,
-        mass: 10,
-        maxSize: 12
-    })
-    asteroidsM = this.physics.add.group({
-        defaultKey: 'asteroid_medium',
-        frameQuantity: 12,
-        active: false,
-        visibile: false,
-        enable: false,
-        bounceX: 1,
-        bounceY: 1,
-        circle: 16,
-        angularVelocity: 10,
-        mass: 10,
-        maxSize: 12
-    })
-    asteroidsS = this.physics.add.group({
-        defaultKey: 'asteroid_small',
-        frameQuantity: 12,
-        active: false,
-        visibile: false,
-        enable: false,
-        bounceX: 1,
-        bounceY: 1,
-        circle: 16,
-        angularVelocity: 10,
-        mass: 10,
-        maxSize: -1
-    })
+    //game parameters
+    this.score = 0;
+    this.scoreIncrement = 50;
+    this.asteroidIncrease = 3;
+    this.level = 1;
 
-    for (var i = 0; i < 8; i++) {
-        var p = Phaser.Geom.Rectangle.RandomOutside(
-                new Phaser.Geom.Rectangle(0, 0, 960, 720),
-                new Phaser.Geom.Rectangle(350, 250, 256, 256)
-            )
-        createAstroid(p.x, p.y, Phaser.Math.Between(-100,100), Phaser.Math.Between(-100,100))
-    }
+    this.blasts = this.physics.add.group();
+    this.players = this.physics.add.group();
 
-  //   //startcollision check for small asteroids only
-  //   this.physics.add.collider(asteroidsS, asteroidsS, function (_asteroid1, _asteroid2){
-  //       console.log('small and small Asteroids colidded');
-  //     });
-  //   //End collision for small asteroids
-  //   //startcollision check for medium asteroids only
-  //   this.physics.add.collider(asteroidsM, asteroidsM, function (_asteroid1, _asteroid2){
-  //      createnewsmallasteroids(_asteroid1,_asteroid2);
-  //   });
-  //   //End collision for medium asteroids
-  //   //startcollision check for big asteroids only
-  //  this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2){
-  //      createnewmediumasteroids(_asteroid1,_asteroid2);
-  //   });
-  //     //End collision for big asteroids
-  //     // Begin collision for small and big rocks only
-  //   this.physics.add.collider(asteroidsS , asteroidsG, function (_asteroid1, _asteroid2){
-  //       createnewmediumasteroids(_asteroid1,_asteroid2);
-  //   });
-  //     // End collision for small and big rocks
-  //     // start collision for medium and big rocks
-  //   this.physics.add.collider(asteroidsM , asteroidsG, function (_asteroid1, _asteroid2){
-  //       createnewmediumasteroids(_asteroid1,_asteroid2);
-  //   });
-  //     // end collision for medium and big rocks
-  //     // start collision for small and medium rocks
-  //   this.physics.add.collider(asteroidsS, asteroidsM , function (_asteroid1, _asteroid2){
-  //       createnewsmallasteroids(_asteroid1,_asteroid2);
-  //   });
-    //large asteroid collision with player
-    this.physics.add.collider(asteroidsG, player, function () {
-        console.log('asteroidsG collided with player'); // you  can add the lives logic here if you want
+    this.player = new Player(this, 600, 400, 0.99, 0.13, 150);
+
+    //create physics for asteroids and track by size
+    this.asteroids = this.physics.add.group();
+    this.largeAsteroids = [];
+    this.mediumAsteroids = [];
+    this.smallAsteroids = [];
+
+    //this.asteroids.add(this.largeAsteroids);
+
+    //add colliders
+    createColliders(this);
+    
+    this.asteroidController = new AsteroidController();
+    this.hud = new HUD(this);
+    this.cursors = this.input.keyboard.createCursorKeys();
+    
+    this.input.keyboard.on("keydown_ENTER", () => {
+        if (!this.player.playerAlive)
+            this.scene.restart();
     });
-    //medium asteroid collision with player
-    this.physics.add.collider(asteroidsM, player, function () {
-        console.log('asteroidsM collided with player');  // you  can add the lives logic here if you want
-    });
-    //small asteroid collision with player
-    this.physics.add.collider(asteroidsS, player, function () {
-        console.log('asteroidsS collided with player');  // you  can add the lives logic here if you want
-    });
-    //handels input
-    cursors = this.input.keyboard.createCursorKeys();
+
+    spawnAsteroidWave(this, this.level * this.asteroidIncrease);
 }
-var canshoot;
-canshoot = true;
-function update (time, delta)
-{
-    // check for forward movement
-    if (cursors.up.isDown)
-    {
-        this.physics.velocityFromRotation(player.rotation, 200, player.body.acceleration);
+
+function update ()
+{       
+    if (this.player.playerAlive) {
+        this.player.shipMovement();
+        this.player.shipShooting();
+
+        //screen wrapping
+        this.physics.world.wrap(this.player, 32);
+        this.physics.world.wrap(this.blasts, 20);
+        this.physics.world.wrapArray(this.largeAsteroids, 32);
+        this.physics.world.wrapArray(this.mediumAsteroids, 32);
+        this.physics.world.wrapArray(this.smallAsteroids, 32);
+
+        //spawn new wave of asteroids if all have been destroyed
+        if (this.asteroids.getLength() === 0) {
+            this.largeAsteroids = [];
+            this.mediumAsteroids = [];
+            this.smallAsteroids = [];
+
+            //increase wave?
+            this.level += 1;
+            this.hud.updateLevel(this.level);
+            spawnAsteroidWave(this, this.level); //make the new asteroids a function of the level & whatever difficulty multiplier we want
+        }
     }
-    else
-    {
-        player.setAcceleration(0);
+}
+
+function createColliders(scene) {
+    scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
+        scene.player.killPlayer(player, asteroid, scene);});
+    scene.physics.add.collider(scene.asteroids, scene.asteroids); //asteroid self-collisions
+
+    scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
+        //update score here
+        scene.score += scene.scoreIncrement;
+        scene.hud.updateScore(scene.score);
+        delete blast.destroy();
+        asteroid.destroyAsteroid();
+    })
+}
+function spawnAsteroidWave(scene, level) {
+    scene.asteroidController.genAsteroids(scene, level);
+}
+
+class Player extends Phaser.Physics.Arcade.Sprite {
+    constructor(
+        scene,
+        playerMaxVelocity,
+        playerAcceleration,
+        playerDrag,
+        rotationSpeed,
+        bulletFrequency
+    ) {
+        super(scene, scene.game.config.width / 2, scene.game.config.height / 2, "ship");
+        this.scene = scene;
+        this.rotationSpeed = rotationSpeed;
+        this.bulletFrequency = bulletFrequency;
+        this.bulletTime = 0;
+        this.playerAcceleration = playerAcceleration
+    
+        scene.add.existing(this);
+        scene.players.add(this);
+
+        this.setDamping(true);
+        this.setDrag(playerDrag);
+        this.setMaxVelocity(playerMaxVelocity);
+
+        this.setCircle(16);
+        this.setOffset(16, 16);
+
+        // this.scene.physics.add.collider(
+        //     this.scene.players,
+        //     this.scene.asteroids,
+        //     (player, asteroid) => {
+        //         this.killPlayer(player, asteroid, scene);
+        //         //update overlay to game over screen
+        //         //scene.playerHug.displayGameOverOverlay(scene);
+        //     }
+        // );
+
+        this.playerAlive = true;
+        return this;
     }
 
-        // check for rotation
-        if (cursors.left.isDown)
-        {
-            player.setAngularVelocity(-300);
+    killPlayer(player, asteroid, scene) {
+        if (this.playerAlive) {
+            //play death animation
+
+            //destroy asteroid
+            asteroid.destroyAsteroid();
+
+            //use a delay before destroying the player object
+            // this.on(
+            //     "animationcomplete",
+            //     () => {
+            //     this.destroy();
+            //     },
+            //     scene
+            // );
+            this.destroy();
         }
-        else if (cursors.right.isDown)
+
+        this.playerAlive = false;
+    }
+
+    shipMovement() {
+        // check for forward movement
+        if (this.scene.cursors.up.isDown)
         {
-            player.setAngularVelocity(300);
+            this.scene.physics.velocityFromRotation(
+                this.scene.player.rotation, 
+                200, 
+                this.scene.player.body.acceleration);
         }
         else
         {
-            player.setAngularVelocity(0);
+            this.scene.player.setAcceleration(0);
         }
-		    if (cursors.down.isDown)
-		    {
-          if(canshoot)
+        
+        // check for rotation
+        if (this.scene.cursors.left.isDown)
         {
-        var BULLET_SPEED = 300;
-        var bulletOffset = 20 * Math.sin(player.angle * 3.14 / 180 );
-        var newbullet = this.physics.add.sprite(player.x , player.y, 'bullet');
-        newbullet.angle = player.angle;
-        this.physics.velocityFromAngle(newbullet.angle, BULLET_SPEED, newbullet.body.velocity);
-        newbullet.body.velocity.x += player.body.velocity.x;
-        canshoot=false;
-        //check for bullet collision with small asteroid
-        this.physics.add.collider(newbullet, asteroidsS, function (_bullet, _asteroidhit)
-        {
-        delete _asteroidhit.destroy();
-        delete _bullet.destroy();
-          //  _asteroidhit.disableBody(true,true);
-        //  _bullet.disableBody(true,true);  // you  can add the score logic here if you want
-        });
-        //check for bullet collision with medium asteroid
-        this.physics.add.collider(newbullet, asteroidsM, function (_bullet, _asteroidhit)
-        {
-          delete _asteroidhit.destroy();
-          delete _bullet.destroy();
-          //createnewsmallasteroids(_bullet, _asteroidhit);
-        //_bullet.disableBody(true,true);  // you  can add the score logic here if you want
-        });
-        //check for bullet collision with large asteroid
-        this.physics.add.collider(newbullet, asteroidsG, function (_bullet, _asteroidhit)
-        {
-          delete _asteroidhit.destroy();
-          delete _bullet.destroy();
-          // console.log("Shockwave logic, big asteroid hit");
-        // createnewmediumasteroids(_bullet, _asteroidhit); // technically we dont want this feature, this is just for first playable.
-        // _bullet.disableBody(true,true);  // you  can add the score logic here if you want
-        });
-        this.time.delayedCall(500, setshoottotrue, [], this);
+            this.scene.player.setAngularVelocity(-300);
         }
-
-    }else{};
-
-
-
-    this.physics.world.wrap(player, 32);
-    this.physics.world.wrap(asteroidsG, 32);
-    this.physics.world.wrap(asteroidsM, 32);
-    this.physics.world.wrap(asteroidsS, 32);
-}
-// Below function will create small asteroids on collision
-function createnewsmallasteroids(_asteroid1,_asteroid2)
-{
-  createsmallasteroids(
-      Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-      Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-      Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-      Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-
-  );
-  _asteroid1.disableBody(true,true);
-  _asteroid2.disableBody(true,true);
-}
-// Below function will create medium asteroids on collision
-function createnewmediumasteroids(_asteroid1,_asteroid2)
-{
-  createmediumasteroids(
-      Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-      Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-      Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-      Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-
-  );
-  _asteroid1.disableBody(true,true);
-  _asteroid2.disableBody(true,true);
-}
-//actual function that creates small asteroids only
-function createsmallasteroids(x, y, vx, vy)
-{
-  var astroids = asteroidsS.get();
-  if(!astroids) return;
-  astroids.enableBody(true, x, y, true, true);
-  astroids.setVelocity(vx, vy);
-  astroids.setCircle(16);
-  astroids.setMaxVelocity(200,200);
-}
-//actual function that creates medium asteroids only
-function createmediumasteroids(x, y, vx, vy)
-{
-  var astroidM = asteroidsM.get();
-  if(!astroidM) return;
-  astroidM.enableBody(true, x, y, true, true);
-  astroidM.setVelocity(vx, vy);
-  astroidM.setCircle(16);
-  astroidM.setMaxVelocity(200,200);
-}
-
-// create all asteroids to begin the game
-function createAstroid(x, y, vx, vy)
-{
-    var asteroid = asteroidsG.get();
-    var astroidM = asteroidsM.get();
-    var astroids = asteroidsS.get();
-    if (!asteroid | !astroidM | !astroids) return;
-    if(asteroid)
-    {
-      asteroid.enableBody(true, x, y, true, true);
-      asteroid.setVelocity(vx, vy);
-      asteroid.setCircle(16);
-      asteroid.setMaxVelocity(200,200);
-
+        else if (this.scene.cursors.right.isDown)
+        {
+            this.scene.player.setAngularVelocity(300);
+        }
+        else
+        {
+            this.scene.player.setAngularVelocity(0);
+        }
     }
-    if(astroidM)
-    {
-      astroidM.enableBody(true, x, y, true, true);
-      astroidM.setVelocity(vx, vy);
-      astroidM.setCircle(16);
-      astroidM.setMaxVelocity(200,200);
 
+    shipShooting() {
+        if (this.scene.cursors.space.isDown && this.bulletTime <= this.scene.time.now && this.scene.blasts.getLength() < 3) {
+            this.bulletTime = this.scene.time.now + this.bulletFrequency;
+            new Blast(this.scene);
+        }
     }
-    if(astroids)
-    {
 
-      astroids.enableBody(true, x, y, true, true);
-      astroids.setVelocity(vx, vy);
-      astroids.setCircle(16);
-      astroids.setMaxVelocity(200,200);
+    reset() {
+        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height / 2);
+        this.setVelocity(0);
+        this.setAcceleration(0);
     }
 }
 
-function setshoottotrue()
-{canshoot=true;}
+class Blast extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene) {
+        const x = scene.player.x;
+        const y = scene.player.y;
+
+        const offsetX = Math.cos(scene.player.rotation) * 30;
+        const offsetY = Math.sin(scene.player.rotation) * 30;
+
+        super(scene, x + offsetX, y + offsetY, "blast");
+        scene.add.existing(this);
+        scene.blasts.add(this);
+
+        this.setAngle(scene.player.angle);
+        scene.physics.world.enableBody(this);
+
+        scene.physics.velocityFromRotation(
+            scene.player.rotation,
+            500 + scene.player.body.speed,
+            this.body.velocity
+        );
+
+        this.time = scene.time.addEvent({
+            delay: 800,
+            callback: () => {this.destroy()},
+            scope: this
+        });
+
+        //adjust collider
+        this.setSize(12, 12);
+        this.setOffset(0, 0);
+    }
+}
+
+class AsteroidController {
+         
+         genAsteroids(scene, num) {
+             for (let i = 0; i < num; i++) {
+                 this.spawnAsteroid(scene);
+             }
+         }
+ 
+         //Deletes all asteroids from the field
+         clearAsteroids() {
+             for (let i = 0; i < this.asteroids.length; i++) {
+             this.asteroids[i].destroy();
+             }
+         }
+ 
+         spawnAsteroid(scene) {
+             let side = Math.floor(Math.random() * 4);
+             let spawnLocation = this.getSpawn(
+                side,
+                scene.game.config.width,
+                scene.game.config.height
+             );
+             let direction = this.getDirection(side);
+             return new LargeAsteroid(scene, spawnLocation.x, spawnLocation.y, direction, Math.floor(Math.random() * 100) + 50);
+         }
+ 
+         getSpawn(side, gameWidth, gameHeight) {
+             switch (side) {
+             case 2:
+                 return { x: 0, y: this.randomIntFromInterval(0, gameHeight) };
+             case 3:
+                 return { x: gameWidth, y: this.randomIntFromInterval(0, gameHeight) };
+             case 1:
+                 return { x: this.randomIntFromInterval(0, gameWidth), y: 0 };
+             case 0:
+                 return { x: this.randomIntFromInterval(0, gameWidth), y: gameHeight };
+             }
+         }
+ 
+         getDirection(side) {
+             //Left side is tricky because it requires a range (in degrees) of
+             //Left: 270-360 or 0-90
+             switch (side) {
+             case 2:
+                 if (this.randomIntFromInterval(0, 1) === 0) {
+                     return this.randomIntFromInterval(280, 350);
+                 } else {
+                     return this.randomIntFromInterval(10, 80);
+                 }
+             case 3:
+                 return this.randomIntFromInterval(110, 250);
+             case 0:
+                 return this.randomIntFromInterval(200, 340);
+             case 1:
+                 return this.randomIntFromInterval(20, 160);
+             }
+         }
+ 
+         randomIntFromInterval(min, max) {
+             return Math.floor(Math.random() * (max - min + 1) + min);
+         }
+     }
+ 
+class Asteroid extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture, rotation, speed) {
+        super(scene, x, y, texture);
+        this.scene = scene;
+        scene.add.existing(this);
+        scene.asteroids.add(this);
+
+        this.setRotation(rotation);
+        scene.physics.world.enableBody(this);
+        this.setBounce(1);
+        scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
+    }
+}
+
+class LargeAsteroid extends Asteroid {
+    constructor(scene, x, y, rotation, speed) {
+        super(scene, x, y, "asteroid_large", rotation, speed);
+        this.setCircle(56);
+        scene.largeAsteroids.push(this);
+    }
+
+    destroyAsteroid() {
+        new MediumAsteroid(
+        this.scene,
+        this.x,
+        this.y,
+        Math.floor(Math.random() * 360),
+        Math.floor(Math.random() * 75) + 50
+        );
+
+        new MediumAsteroid(
+        this.scene,
+        this.x,
+        this.y,
+        Math.floor(Math.random() * 360),
+        Math.floor(Math.random() * 75) + 50
+        );
+
+        new MediumAsteroid(
+        this.scene,
+        this.x,
+        this.y,
+        Math.floor(Math.random() * 360),
+        Math.floor(Math.random() * 75) + 50
+        );
+
+        this.destroy();
+    }
+}
+
+class MediumAsteroid extends Asteroid {
+    constructor(scene, x, y, rotation, speed) {
+        super(scene, x, y, "medium_asteroid_a", rotation, speed);
+        this.setCircle(12);
+        this.setOffset(6);
+        scene.mediumAsteroids.push(this);
+    }
+
+    //Upon destruction, this method creates 2 small asteroids, launches them in any direction, and then deletes itself.
+    destroyAsteroid() {
+        new SmallAsteroid(
+            this.scene,
+            this.x,
+            this.y,
+            Math.floor(Math.random() * 360),
+            Math.floor(Math.random() * 75) + 50
+        );
+
+        new SmallAsteroid(
+            this.scene,
+            this.x,
+            this.y,
+            Math.floor(Math.random() * 360),
+            Math.floor(Math.random() * 75) + 50
+        );
+
+        this.destroy();
+    }
+}
+
+class SmallAsteroid extends Asteroid {
+    constructor(scene, x, y, rotation, speed) {
+        //Use these to pass these back to the super class to construct the object
+        super(scene, x, y, "small_asteroid", rotation, speed);
+        this.setCircle(6);
+        this.setOffset(5, 5);
+        scene.smallAsteroids.push(this);
+    }
+
+    //Upon destruction, the asteroid deletes itself.
+    destroyAsteroid() {
+        this.destroy();
+    }
+}
+
+class HUD {
+    constructor(scene) {
+        this.score = scene.add
+        .text(10, 10, "Score", {
+            font: "18px Arial"
+        })
+        .setScrollFactor(0);
+        this.scoreText = scene.add
+        .text(70, 10, "0", {
+            font: "18px Arial",
+            color: "yellow"
+        })
+        .setScrollFactor(0);
+
+        this.level = scene.add
+        .text(10, 30, "Level", {
+            font: "18px Arial"
+        })
+        .setScrollFactor(0);
+
+        this.level = scene.add
+        .text(10, 30, "Level", {
+            font: "18px Arial"
+        })
+        .setScrollFactor(0);
+
+        this.levelText = scene.add
+        .text(70, 30, "1", {
+            font: "18px Arial",
+            color: "yellow"
+        })
+        .setScrollFactor(0);
+
+        let gameOverText = scene.add.text(275, 100, "Game Over", {
+        font: "50px Arial"
+        });
+        gameOverText.setScrollFactor(0);
+        gameOverText.visible = false;
+
+        let restartText = scene.add.text(300, 200, "Press Enter To Restart");
+        restartText.setScrollFactor(0);
+        restartText.visible = false;
+
+        this.gameOverOverlay = { gameOverText, restartText };
+    }
+
+    updateScore(newScore) {
+        this.scoreText.setText(newScore);
+    }
+    updateLevel(newLevel) {
+        this.levelText.setText(newLevel);
+    }
+
+    displayGameOverOverlay() {
+        this.gameOverOverlay.gameOverText.visible = true;
+        this.gameOverOverlay.restartText.visible = true;
+    }
+}
