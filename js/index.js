@@ -20,7 +20,8 @@ var config = {
 		menuScreen,
 		gameScreen,
 		winScreen,
-		failScreen
+		failScreen,
+		pauseScreen
     ]
 };
 

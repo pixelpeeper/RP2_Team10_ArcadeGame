@@ -36,7 +36,7 @@ class gameScreen extends Phaser.Scene{
 		player.setBounce(1)
 		this.data.set('lives', 5);
 		this.data.set('score', 0);
-		var text = this.add.text(80,120,'',{font: '32px Courier', fill: '#00ff00'});
+		var text = this.add.text(80,120,'',{font: '32px Sans-Serif', fill: '#00ff00'});
 		text.setText([
 		  'Lives: ' + this.data.get('lives'),
 		  'Score: ' + this.data.get('score')
@@ -134,6 +134,13 @@ class gameScreen extends Phaser.Scene{
 		cursors = this.input.keyboard.createCursorKeys();
 		
 		console.log('gameScreen creating complete');
+		
+		
+		this.input.on('pointerdown', function () {
+			console.log('down');
+			this.scene.launch('pauseScreen');
+			this.scene.pause('gameScreen');
+		}, this);
 	}
 
 	update (time, delta)
