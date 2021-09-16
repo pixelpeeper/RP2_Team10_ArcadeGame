@@ -3,8 +3,10 @@ var player;
 var canshoot = true;
 var cursors;
 var asteroidsG;
+var asteroidsM;
+var asteroidsS;
 
-class playing extends Phaser.Scene{
+class gameScreen extends Phaser.Scene{
     constructor(){
         super('gameScreen');
     }

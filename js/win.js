@@ -1,5 +1,5 @@
 
-class win extends Phaser.Scene {
+class winScreen extends Phaser.Scene {
     constructor(){
         super("winScreen");
     }

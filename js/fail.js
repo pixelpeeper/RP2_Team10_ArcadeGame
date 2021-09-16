@@ -1,5 +1,5 @@
 
-class fail extends Phaser.Scene {
+class failScreen extends Phaser.Scene {
     constructor(){
         super("failScreen");
     }

@@ -17,10 +17,10 @@ var config = {
         }
     },
     scene: [
-		menue,
-		playing,
-		win,
-		fail
+		menuScreen,
+		gameScreen,
+		winScreen,
+		failScreen
     ]
 };
 
