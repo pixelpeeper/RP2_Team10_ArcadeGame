@@ -48,7 +48,15 @@
 
     function create ()
     {
-        this.player = createPlayer(this);
+        //game parameters
+        this.score = 0;
+
+        //this.player = createPlayer(this);
+
+        this.blasts = this.physics.add.group();
+        this.players = this.physics.add.group();
+
+        this.player = new Player(this, 600, 400, 0.99, 0.13, 75);
 
         // asteroid = this.physics.add.image(200, 200, 'asteroid_large');
         // asteroid.setMaxVelocity(100);
@@ -81,8 +89,8 @@
         // {
         //     asteroid.setCircle(64);
         // });
+        //create physics for asteroids and track by size
         this.asteroids = this.physics.add.group();
-
         this.largeAsteroids = [];
         this.mediumAsteroids = [];
         this.smallAsteroids = [];
@@ -90,8 +98,8 @@
         //this.asteroids.add(this.largeAsteroids);
 
         //add colliders
-        this.physics.add.collider(this.player, this.asteroids);
-
+        createColliders(this);
+        
         this.asteroidController = new AsteroidController();
 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -100,14 +108,43 @@
 
     function update ()
     {       
-        input(this);
+        //input(this);
+        if (this.player.playerAlive) {
+            this.player.shipMovement();
+            this.player.shipShooting();
 
-        this.physics.world.wrap(this.player, 32);
-        this.physics.world.wrapArray(this.largeAsteroids, 32);
-        this.physics.world.wrapArray(this.mediumAsteroids, 32);
-        this.physics.world.wrapArray(this.smallAsteroids, 32);
+            //screen wrapping
+            this.physics.world.wrap(this.player, 32);
+            this.physics.world.wrap(this.blasts, 20);
+            this.physics.world.wrapArray(this.largeAsteroids, 32);
+            this.physics.world.wrapArray(this.mediumAsteroids, 32);
+            this.physics.world.wrapArray(this.smallAsteroids, 32);
+
+            //spawn new wave of asteroids if all have been destroyed
+            if (this.asteroids.getLength() === 0) {
+                this.largeAsteroids = [];
+                this.mediumAsteroids = [];
+                this.smallAsteroids = [];
+
+                //increase wave?
+                //this.level += 1;
+                //update HUD?
+                //this.playerHud.updateLevel(this.level);
+                this.spawnAsteroidWave(this, 8); //make the new asteroids a function of the level & whatever difficulty multiplier we want
+            }
+        }
     }
 
+    function createColliders(scene) {
+        //this.physics.add.collider(this.player, this.asteroids);
+        this.physics.add.collider(this.asteroids, this.asteroids); //asteroid self-collisions
+
+        this.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
+            //update score here
+            delete blast.destroy();
+            asteroid.destroyAsteroid();
+        })
+    }
     function createPlayer(scene) {
         scene.player = scene.physics.add.image(400, 400, 'ship');
         scene.player.setAngle(-90);
@@ -115,7 +152,7 @@
         scene.player.setDrag(0.99);
         scene.player.setMaxVelocity(200);
         scene.player.setCircle(32);
-        scene.player.setMass(50);
+        scene.player.setMass(10);
         return scene.player;
     }
     function input(scene) {
@@ -147,73 +184,202 @@
         scene.asteroidController.genAsteroids(scene, level);
     }
 
-    class AsteroidController {
-             
-        genAsteroids(scene, num) {
-            console.log(scene.game.config.width);
-            for (let i = 0; i < num; i++) {
-                this.spawnAsteroid(scene);
-            }
-            console.log("spawn asteroids");
-        }
+    
+    class Player extends Phaser.Physics.Arcade.Sprite {
+        constructor(
+            scene,
+            playerMaxVelocity,
+            playerAcceleration,
+            playerDrag,
+            rotationSpeed,
+            bulletFrequency
+        ) {
+            super(scene, scene.game.config.width / 2, scene.game.config.height / 2, "ship");
+            this.scene = scene;
+            this.rotationSpeed = rotationSpeed;
+            this.bulletFrequency = bulletFrequency;
+            this.bulletTime = 0;
+            this.playerAcceleration = playerAcceleration
+        
+            scene.add.existing(this);
+            scene.players.add(this);
 
-        //Deletes all asteroids from the field
-        clearAsteroids() {
-            for (let i = 0; i < this.asteroids.length; i++) {
-            this.asteroids[i].destroy();
-            }
-        }
+            this.setDamping(true);
+            this.setDrag(playerDrag);
+            this.setMaxVelocity(playerMaxVelocity);
 
-        spawnAsteroid(scene) {
-            let side = Math.floor(Math.random() * 4);
-            //Using the side, generate the x,y values where the asteroid is supposed to spawn
-            let spawnLocation = this.genSpawnLocation(
-            side,
-            scene.game.config.width,
-            scene.game.config.height
-            );
-            //Using the side, generate the direction the asteroid should be moving
-            let direction = this.genDirection(side);
-            return new LargeAsteroid(scene, spawnLocation.x, spawnLocation.y, direction, Math.floor(Math.random() * 100) + 50);
-        }
+            this.setCircle(24);
 
-        genSpawnLocation(side, gameWidth, gameHeight) {
-            switch (side) {
-            case 2:
-                return { x: 0, y: this.randomIntFromInterval(0, gameHeight) };
-            case 3:
-                return { x: gameWidth, y: this.randomIntFromInterval(0, gameHeight) };
-            case 1:
-                return { x: this.randomIntFromInterval(0, gameWidth), y: 0 };
-            case 0:
-                return { x: this.randomIntFromInterval(0, gameWidth), y: gameHeight };
-            }
-        }
-
-        genDirection(side) {
-            //Left side is tricky because it requires a range (in degrees) of
-            //Left: 270-360 or 0-90
-            switch (side) {
-            case 2:
-                if (this.randomIntFromInterval(0, 1) === 0) {
-                    return this.randomIntFromInterval(280, 350);
-                } else {
-                    return this.randomIntFromInterval(10, 80);
+            scene.physics.add.collider(
+                scene.players,
+                scene.asteroids,
+                (player, asteroid) => {
+                    this.killPlayer(player, asteroid, scene);
+                    //update overlay to game over screen
+                    //scene.playerHug.displayGameOverOverlay(scene);
                 }
-            case 3:
-                return this.randomIntFromInterval(110, 250);
-            case 0:
-                return this.randomIntFromInterval(200, 340);
-            case 1:
-                return this.randomIntFromInterval(20, 160);
+            );
+
+            this.playerAlive = true;
+            return this;
+        }
+
+        killPlayer(player, asteroid, scene) {
+            if (this.playerAlive) {
+                //play death animation
+
+                //destroy asteroid
+                asteroid.destroyAsteroid();
+
+                //use a delay before destroying the player object
+            }
+
+            this.playerAlive = false;
+        }
+
+        shipMovement() {
+            // check for forward movement
+            if (this.scene.cursors.up.isDown)
+            {
+                this.scene.physics.velocityFromRotation(
+                    this.scene.player.rotation, 
+                    200, 
+                    this.scene.player.body.acceleration);
+            }
+            else
+            {
+                this.scene.player.setAcceleration(0);
+            }
+            
+            // check for rotation
+            if (this.scene.cursors.left.isDown)
+            {
+                this.scene.player.setAngularVelocity(-300);
+            }
+            else if (this.scene.cursors.right.isDown)
+            {
+                this.scene.player.setAngularVelocity(300);
+            }
+            else
+            {
+                this.scene.player.setAngularVelocity(0);
             }
         }
 
-        randomIntFromInterval(min, max) {
-            return Math.floor(Math.random() * (max - min + 1) + min);
+        shipShooting() {
+            if (this.scene.cursors.space.isDown && this.bulletTime <= this.scene.time.now) {
+                this.bulletTime = this.scene.time.now + this.bulletFrequency;
+                new Blast(this.scene);
+            }
+        }
+
+        reset() {
+            this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height / 2);
+            this.setVelocity(0);
+            this.setAcceleration(0);
         }
     }
 
+    class Blast extends Phaser.Physics.Arcade.Sprite {
+        constructor(scene) {
+            const x = scene.player.x;
+            const y = scene.player.y;
+
+            const offsetX = Math.cos(scene.player.rotation) * 30;
+            const offsetY = Math.sin(scene.player.rotation) * 30;
+
+            super(scene, x + offsetX, y + offsetY, "blast");
+            scene.add.existing(this);
+            scene.blasts.add(this);
+
+            this.setAngle(scene.player.angle);
+            scene.physics.world.enableBody(this);
+
+            scene.physics.velocityFromRotation(
+                scene.player.rotation,
+                850 + scene.player.body.speed,
+                this.body.velocity
+            );
+
+            this.time = scene.time.addEvent({
+                delay: 800,
+                callback: () => {this.destroy()},
+                scope: this
+            });
+
+            //adjust collider
+            this.setSize(12, 12);
+            this.setOffset(0, 0);
+        }
+    }
+
+    class AsteroidController {
+             
+             genAsteroids(scene, num) {
+                 console.log(scene.game.config.width);
+                 for (let i = 0; i < num; i++) {
+                     this.spawnAsteroid(scene);
+                 }
+                 console.log("spawn asteroids");
+             }
+     
+             //Deletes all asteroids from the field
+             clearAsteroids() {
+                 for (let i = 0; i < this.asteroids.length; i++) {
+                 this.asteroids[i].destroy();
+                 }
+             }
+     
+             spawnAsteroid(scene) {
+                 let side = Math.floor(Math.random() * 4);
+                 //Using the side, generate the x,y values where the asteroid is supposed to spawn
+                 let spawnLocation = this.genSpawnLocation(
+                 side,
+                 scene.game.config.width,
+                 scene.game.config.height
+                 );
+                 //Using the side, generate the direction the asteroid should be moving
+                 let direction = this.genDirection(side);
+                 return new LargeAsteroid(scene, spawnLocation.x, spawnLocation.y, direction, Math.floor(Math.random() * 100) + 50);
+             }
+     
+             genSpawnLocation(side, gameWidth, gameHeight) {
+                 switch (side) {
+                 case 2:
+                     return { x: 0, y: this.randomIntFromInterval(0, gameHeight) };
+                 case 3:
+                     return { x: gameWidth, y: this.randomIntFromInterval(0, gameHeight) };
+                 case 1:
+                     return { x: this.randomIntFromInterval(0, gameWidth), y: 0 };
+                 case 0:
+                     return { x: this.randomIntFromInterval(0, gameWidth), y: gameHeight };
+                 }
+             }
+     
+             genDirection(side) {
+                 //Left side is tricky because it requires a range (in degrees) of
+                 //Left: 270-360 or 0-90
+                 switch (side) {
+                 case 2:
+                     if (this.randomIntFromInterval(0, 1) === 0) {
+                         return this.randomIntFromInterval(280, 350);
+                     } else {
+                         return this.randomIntFromInterval(10, 80);
+                     }
+                 case 3:
+                     return this.randomIntFromInterval(110, 250);
+                 case 0:
+                     return this.randomIntFromInterval(200, 340);
+                 case 1:
+                     return this.randomIntFromInterval(20, 160);
+                 }
+             }
+     
+             randomIntFromInterval(min, max) {
+                 return Math.floor(Math.random() * (max - min + 1) + min);
+             }
+         }
+     
     class Asteroid extends Phaser.Physics.Arcade.Sprite {
         constructor(scene, x, y, texture, rotation, speed) {
             super(scene, x, y, texture);
