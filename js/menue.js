@@ -40,7 +40,8 @@ class menuScreen extends Phaser.Scene {
 			console.log('down');
 			//this.scene.remove('menuScreen');
 			this.scene.start('gameScreen');
-			this.scene.remove('menuScreen');
+			this.scene.setVisible(false,'menuScreen');
+			this.scene.pause('menuScreen');
 		}, this);
 		//credits
 		this.credits = this.add.text(gameDimentions.x/2,50,'Credits:', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});

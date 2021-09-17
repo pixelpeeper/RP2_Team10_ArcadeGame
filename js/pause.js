@@ -41,6 +41,7 @@ class pauseScreen extends Phaser.Scene {
 			console.log('down');
 			this.scene.wake('gameScreen');
 			this.scene.setVisible(false,'pauseScreen');
+			this.scene.pause('pauseScreen');
 		}, this);
 	}
 	update(time, delta){
