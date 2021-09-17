@@ -25,9 +25,9 @@ class menuScreen extends Phaser.Scene {
 		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground');
 		this.background.setOrigin(0.5,0.5)
 		
-		this.controlls = this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd');
-		this.controlls = this.add.image(gameDimentions.x/2, 	gameDimentions.y/2 + 27.5	+ 250, 	'spacebar');
-		this.controlls = this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows');
+		this.controlls_wasd = this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd');
+		this.controlls_spacebar = this.add.image(gameDimentions.x/2, 	gameDimentions.y/2 + 27.5	+ 250, 	'spacebar');
+		this.controlls_arrows = this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows');
 		//spacebar text
 		this.shoot = this.add.text(gameDimentions.x/2,gameDimentions.y/2 + 275,'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
 		this.shoot.setOrigin(0.5,0.5);
@@ -36,13 +36,76 @@ class menuScreen extends Phaser.Scene {
 		this.start.setInteractive();
 		this.start.setOrigin(0.5,0.5);
 		//start game
-		this.input.on('pointerup', function () {
-			console.log('down');
+		//this.input.on('pointerup', function () {
+		//	console.log('down');
+		//	//this.scene.remove('menuScreen');
+		//	this.scene.start('gameScreen');
+		//	this.scene.setVisible(false,'menuScreen');
+		//	this.scene.pause('menuScreen');
+		//}, this);
+		//also starts the game
+		this.input.keyboard.on('keyup-' + 'ENTER',  function () {
+			console.log('starting with enter');
 			//this.scene.remove('menuScreen');
 			this.scene.start('gameScreen');
 			this.scene.setVisible(false,'menuScreen');
 			this.scene.pause('menuScreen');
 		}, this);
+
+		//keybindings demos
+		//spacebar
+		this.input.keyboard.on('keydown-' + 'SPACE',  function () {
+			this.controlls_spacebar.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'SPACE',  function () {
+			this.controlls_spacebar.setTint(0xFFFFFF);
+		}, this);
+
+		//wasd
+		this.input.keyboard.on('keydown-' + 'W', function () {
+			this.controlls_wasd.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'W', function () {
+			this.controlls_wasd.setTint(0xFFFFFF);
+		}, this);
+		this.input.keyboard.on('keydown-' + 'A', function () {
+			this.controlls_wasd.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'A', function () {
+			this.controlls_wasd.setTint(0xFFFFFF);
+		}, this);
+		this.input.keyboard.on('keydown-' + 'D', function () {
+			this.controlls_wasd.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'D', function () {
+			this.controlls_wasd.setTint(0xFFFFFF);
+		}, this);
+
+		//arrows
+		this.input.keyboard.on('keydown-' + 'UP', function () {
+			this.controlls_arrows.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'UP', function () {
+			this.controlls_arrows.setTint(0xFFFFFF);
+		}, this);
+		this.input.keyboard.on('keydown-' + 'LEFT', function () {
+			this.controlls_arrows.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'LEFT', function () {
+			this.controlls_arrows.setTint(0xFFFFFF);
+		}, this);
+		this.input.keyboard.on('keydown-' + 'RIGHT', function () {
+			this.controlls_arrows.setTint(0xff0000);
+		}, this);
+		this.input.keyboard.on('keyup-' + 'RIGHT', function () {
+			this.controlls_arrows.setTint(0xFFFFFF);
+		}, this);
+
+
+
+
+
+
 		//credits
 		this.credits = this.add.text(gameDimentions.x/2,50,'Credits:', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
 		this.credits.setOrigin(0.5,1);
