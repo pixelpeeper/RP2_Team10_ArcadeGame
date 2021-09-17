@@ -37,9 +37,21 @@ class pauseScreen extends Phaser.Scene {
 		this.start.setInteractive();
 		this.start.setOrigin(0.5,0.5);
 		
-		this.input.on('pointerup', function () {
+		//this.input.on('pointerup', function () {
+		//	console.log('down');
+		//	this.scene.wake('gameScreen');
+		//	this.scene.setVisible(false,'pauseScreen');
+		//	this.scene.pause('pauseScreen');
+		//}, this);
+		this.input.keyboard.on("keyup-ESC", () => {
 			console.log('down');
 			this.scene.wake('gameScreen');
+			this.scene.setVisible(false,'pauseScreen');
+			this.scene.pause('pauseScreen');
+		}, this);
+		this.input.keyboard.on("keyup-SHIFT", () => {
+			console.log('down');
+			this.scene.start('gameScreen');
 			this.scene.setVisible(false,'pauseScreen');
 			this.scene.pause('pauseScreen');
 		}, this);

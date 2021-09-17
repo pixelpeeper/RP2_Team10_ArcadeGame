@@ -50,20 +50,23 @@ class gameScreen extends Phaser.Scene{
 		this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
 
-		this.input.keyboard.on("keydown_ENTER", () => {
-			if (!this.player.playerAlive)
-				this.scene.restart();
-		});
+		//this.input.keyboard.on("keydown_ESCAPE", () => {
+		//	if (!this.player.playerAlive)
+		//		this.scene.restart();
+		//});
 
 		spawnAsteroidWave(this, this.level * this.asteroidIncrease);
 		console.log('gameScreen creating complete');
 
 
-		this.input.on('pointerup', function () {
-			console.log('down');
+		//this.input.on('pointerup', function () {
+		//	this.scene.launch('pauseScreen');
+		//	this.scene.pause('gameScreen');
+		//}, this);
+		this.input.keyboard.on("keyup-ESC", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
-		}, this);
+		});
 	}
 
 	update ()
