@@ -36,7 +36,7 @@ class menuScreen extends Phaser.Scene {
 		this.start.setInteractive();
 		this.start.setOrigin(0.5,0.5);
 		//start game
-		this.input.on('pointerdown', function () {
+		this.input.on('pointerup', function () {
 			console.log('down');
 			//this.scene.remove('menuScreen');
 			this.scene.start('gameScreen');

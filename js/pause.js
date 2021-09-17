@@ -16,12 +16,12 @@ class pauseScreen extends Phaser.Scene {
 		this.load.svg('arrows', 'images/arrows.svg');
 	}
 	
-	create(){
+	create() {
+		console.log('pause creating');
 		var pauseBackground = this.add.rectangle(0,0, gameDimentions.x, gameDimentions.y, 0x333333);
 		pauseBackground.alpha = 0.5;
 		pauseBackground.setOrigin(0,0);
 		
-		console.log('pause creating');
 		gameDimentions.x = this.sys.game.canvas.width;
 		gameDimentions.y = this.sys.game.canvas.height;
 		console.log(gameDimentions)
@@ -37,14 +37,14 @@ class pauseScreen extends Phaser.Scene {
 		this.start.setInteractive();
 		this.start.setOrigin(0.5,0.5);
 		
-		this.input.on('pointerdown', function () {
+		this.input.on('pointerup', function () {
 			console.log('down');
 			this.scene.wake('gameScreen');
 			this.scene.setVisible(false,'pauseScreen');
 		}, this);
 	}
 	update(time, delta){
-		console.log('menue update');
+		console.log('pause menue update');
 		
 	}
 }

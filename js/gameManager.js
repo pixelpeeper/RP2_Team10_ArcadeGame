@@ -57,6 +57,13 @@ class gameScreen extends Phaser.Scene{
 
 		spawnAsteroidWave(this, this.level * this.asteroidIncrease);
 		console.log('gameScreen creating complete');
+
+
+		this.input.on('pointerup', function () {
+			console.log('down');
+			this.scene.launch('pauseScreen');
+			this.scene.pause('gameScreen');
+		}, this);
 	}
 
 	update ()
