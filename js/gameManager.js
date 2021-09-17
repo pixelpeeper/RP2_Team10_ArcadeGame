@@ -1,9 +1,3 @@
-var player;
-var canshoot = true;
-var cursors;
-var asteroidsG;
-var asteroidsM;
-var asteroidsS;
 var cursors; //controls
 
 class gameScreen extends Phaser.Scene{
@@ -244,10 +238,9 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 			scope: this
 		});
 
-		this.physics.world.wrap(player, 32);
-		this.physics.world.wrap(asteroidsG, 32);
-		this.physics.world.wrap(asteroidsM, 32);
-		this.physics.world.wrap(asteroidsS, 32);
+		//adjust collider
+		this.setSize(12, 12);
+		this.setOffset(0, 0);
 	}
 }
 // Below function will create small asteroids on collision
@@ -275,9 +268,6 @@ function createnewmediumasteroids(_asteroid1,_asteroid2)
 	);
 	_asteroid1.disableBody(true,true);
 	_asteroid2.disableBody(true,true);
-	//adjust collider
-	this.setSize(12, 12);
-	this.setOffset(0, 0);
 }
 
 
