@@ -59,10 +59,7 @@ class gameScreen extends Phaser.Scene{
 		console.log('gameScreen creating complete');
 
 
-		//this.input.on('pointerup', function () {
-		//	this.scene.launch('pauseScreen');
-		//	this.scene.pause('gameScreen');
-		//}, this);
+		//pauses the game
 		this.input.keyboard.on("keyup-ESC", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');

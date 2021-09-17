@@ -43,12 +43,14 @@ class pauseScreen extends Phaser.Scene {
 		//	this.scene.setVisible(false,'pauseScreen');
 		//	this.scene.pause('pauseScreen');
 		//}, this);
+		//closes the pause menu
 		this.input.keyboard.on("keyup-ESC", () => {
 			console.log('down');
 			this.scene.wake('gameScreen');
 			this.scene.setVisible(false,'pauseScreen');
 			this.scene.pause('pauseScreen');
 		}, this);
+		//resets the game
 		this.input.keyboard.on("keyup-SHIFT", () => {
 			console.log('down');
 			this.scene.start('gameScreen');
