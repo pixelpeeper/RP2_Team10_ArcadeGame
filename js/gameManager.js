@@ -55,7 +55,6 @@ function create ()
     ]);
     asteroidsG = this.physics.add.group({
         defaultKey: 'asteroid_large',
-        alive: false,
         frameQuantity: 12,
         active: false,
         visibile: false,
@@ -109,7 +108,6 @@ function create ()
     //End collision for medium asteroids
     //startcollision check for big asteroids only
    this.physics.add.collider(asteroidsG, asteroidsG, function (_asteroid1, _asteroid2){
-       
        createnewmediumasteroids(_asteroid1,_asteroid2);
     });
       //End collision for big asteroids
