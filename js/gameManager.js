@@ -92,14 +92,27 @@ class gameScreen extends Phaser.Scene{
 function createColliders(scene) {
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
 		scene.player.killPlayer(player, asteroid, scene);});
-	scene.physics.add.collider(scene.asteroids, scene.asteroids); //asteroid self-collisions
+	scene.physics.add.collider(scene.asteroids, scene.asteroids, (asteroid1, asteroid2) =>{
+		if(asteroid1.getactivated() == true | asteroid2.getactivated() ==true)
+		{
+			asteroid1.destroyAsteroid();
+			asteroid2.destroyAsteroid();
+		}
+	}); //asteroid self-collisions
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
+		if(asteroid.getactivated() == false)
+		{
+			asteroid.setactivated(true);
+			console.dir(asteroid);
+			this.time = scene.time.addEvent({delay: 400, callback: () => {asteroid.setactivated(false)},
+			scope: this})
+		}
 		//update score here
 		scene.score += scene.scoreIncrement;
 		scene.hud.updateScore(scene.score);
 		delete blast.destroy();
-		asteroid.destroyAsteroid();
+	
 	})
 }
 function spawnAsteroidWave(scene, level) {
@@ -349,12 +362,21 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 }
 
 class LargeAsteroid extends Asteroid {
-	constructor(scene, x, y, rotation, speed) {
+	constructor(scene, x, y, rotation, speed, activated) {
 		super(scene, x, y, "asteroid_large", rotation, speed);
 		this.setCircle(56);
+		this.activated = false;
 		scene.largeAsteroids.push(this);
 	}
 
+	setactivated(value)
+	{
+		this.activated = value;
+	}
+	getactivated()
+	{
+		return this.activated;
+	}
 	destroyAsteroid() {
 		new MediumAsteroid(
 		this.scene,
@@ -385,13 +407,22 @@ class LargeAsteroid extends Asteroid {
 }
 
 class MediumAsteroid extends Asteroid {
-	constructor(scene, x, y, rotation, speed) {
+	constructor(scene, x, y, rotation, speed, activated) {
 		super(scene, x, y, "medium_asteroid_a", rotation, speed);
 		this.setCircle(12);
 		this.setOffset(6);
+		this.activated = false;
 		scene.mediumAsteroids.push(this);
 	}
 
+	setactivated(value)
+	{
+		this.activated = value;
+	}
+	getactivated()
+	{
+		return this.activated;
+	}
 	//Upon destruction, this method creates 2 small asteroids, launches them in any direction, and then deletes itself.
 	destroyAsteroid() {
 		new SmallAsteroid(
