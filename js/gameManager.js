@@ -88,7 +88,7 @@ class gameScreen extends Phaser.Scene{
 		} else {
 			console.log('player is dead');
 			//this.scene.remove('menuScreen');
-			this.scene.start('failScreen');
+			this.scene.launch('failScreen');
 			this.scene.pause('gameScreen');
 		}
 	}

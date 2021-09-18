@@ -23,15 +23,18 @@ class pauseScreen extends Phaser.Scene {
 	}
 	
 	create() {
-		console.log('pause creating');
-		var pauseBackground = this.add.rectangle(0,0, gameDimentions.x, gameDimentions.y, 0x333333);
-		pauseBackground.alpha = 0.5;
-		pauseBackground.setOrigin(0,0);
 		
+		console.log('pause creating');
 		gameDimentions.x = this.sys.game.canvas.width;
 		gameDimentions.y = this.sys.game.canvas.height;
 		console.log(gameDimentions)
 		
+		//dims the game
+		var pauseBackground = this.add.rectangle(0,0, gameDimentions.x, gameDimentions.y, 0x333333);
+		pauseBackground.alpha = 0.5;
+		pauseBackground.setOrigin(0,0);
+		
+		//displays controlls
 		this.controlls_wasd_w = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_w');
 		this.controlls_wasd_a = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_a');
 		this.controlls_wasd_s = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_s');
