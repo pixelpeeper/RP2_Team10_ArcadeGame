@@ -85,6 +85,11 @@ class gameScreen extends Phaser.Scene{
 				this.hud.updateLevel(this.level);
 				spawnAsteroidWave(this, this.level); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
+		} else {
+			console.log('player is dead');
+			//this.scene.remove('menuScreen');
+			this.scene.start('failScreen');
+			this.scene.pause('gameScreen');
 		}
 	}
 }
