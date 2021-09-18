@@ -28,8 +28,7 @@ class menuScreen extends Phaser.Scene {
 		gameDimentions.y = this.sys.game.canvas.height;
 		console.log(gameDimentions)
 		//background
-		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground');
-		this.background.setOrigin(0.5,0.5);
+		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
 		
 		this.controlls_wasd_w = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_w');
 		this.controlls_wasd_a = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_a');
@@ -41,12 +40,10 @@ class menuScreen extends Phaser.Scene {
 		this.controlls_arrows_left = 	this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_left');
 		this.controlls_arrows_right = 	this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_right');
 		//spacebar text
-		this.shoot = this.add.text(gameDimentions.x/2,gameDimentions.y/2 + 275,'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
-		this.shoot.setOrigin(0.5,0.5);
+		this.shoot = this.add.text(gameDimentions.x/2,gameDimentions.y/2 + 275,'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		//start game text
-		this.start = this.add.text(gameDimentions.x/2,gameDimentions.y/2,'start game', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
+		this.start = this.add.text(gameDimentions.x/2,gameDimentions.y/2,'start game', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		this.start.setInteractive();
-		this.start.setOrigin(0.5,0.5);
 		//start game
 		//this.input.on('pointerup', function () {
 		//	console.log('down');
