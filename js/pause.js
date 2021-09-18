@@ -48,9 +48,12 @@ class pauseScreen extends Phaser.Scene {
 		this.shoot = this.add.text(gameDimentions.x/2,		gameDimentions.y/2 + 275,	'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
 		this.shoot.setOrigin(0.5,0.5);
 		//start game text
-		this.start = this.add.text(gameDimentions.x/2,		gameDimentions.y/2,			'GAME PAUSED', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
-		this.start.setInteractive();
-		this.start.setOrigin(0.5,0.5);
+		//this.start = this.add.text(gameDimentions.x/2,		gameDimentions.y/2,			'GAME PAUSED', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
+		//this.start.setInteractive();
+		//this.start.setOrigin(0.5,0.5);
+		
+		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'GAME PAUSED', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		TweenHelper.flashElement(this, screenText);
 		
 		//this.input.on('pointerup', function () {
 		//	console.log('down');
