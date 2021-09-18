@@ -91,27 +91,37 @@ class gameScreen extends Phaser.Scene{
 
 function createColliders(scene) {
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
-		scene.player.killPlayer(player, asteroid, scene);});
+		scene.player.killPlayer(player, asteroid, scene);
+	});
 	scene.physics.add.collider(scene.asteroids, scene.asteroids, (asteroid1, asteroid2) =>{
-		if(asteroid1.getactivated() == true | asteroid2.getactivated() ==true)
+		if( asteroid1.getactivated() == true | asteroid2.getactivated() == true )
 		{
+			if(asteroid1.type!=0 && asteroid2.type !=0)
+			{
 			asteroid1.destroyAsteroid();
 			asteroid2.destroyAsteroid();
+			scene.score += scene.scoreIncrement;
+			scene.hud.updateScore(scene.score);
+			}
 		}
 	}); //asteroid self-collisions
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
-		if(asteroid.getactivated() == false)
+		if(asteroid.type == 0)
+		{ 
+			asteroid.destroyAsteroid();
+			scene.score += scene.scoreIncrement;
+			scene.hud.updateScore(scene.score);
+		}
+		else if(asteroid.getactivated() == false && asteroid.type!=0)
 		{
 			asteroid.setactivated(true);
-			console.dir(asteroid);
-			this.time = scene.time.addEvent({delay: 400, callback: () => {asteroid.setactivated(false)},
+			this.time = scene.time.addEvent({delay: 1000, callback: () => {asteroid.setactivated(false)},
 			scope: this})
 		}
 		//update score here
-		scene.score += scene.scoreIncrement;
-		scene.hud.updateScore(scene.score);
 		delete blast.destroy();
+		
 	
 	})
 }
@@ -362,10 +372,11 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 }
 
 class LargeAsteroid extends Asteroid {
-	constructor(scene, x, y, rotation, speed, activated) {
+	constructor(scene, x, y, rotation, speed, activated, type) {
 		super(scene, x, y, "asteroid_large", rotation, speed);
 		this.setCircle(56);
 		this.activated = false;
+		this.type = 2
 		scene.largeAsteroids.push(this);
 	}
 
@@ -407,11 +418,12 @@ class LargeAsteroid extends Asteroid {
 }
 
 class MediumAsteroid extends Asteroid {
-	constructor(scene, x, y, rotation, speed, activated) {
+	constructor(scene, x, y, rotation, speed, activated, type) {
 		super(scene, x, y, "medium_asteroid_a", rotation, speed);
 		this.setCircle(12);
 		this.setOffset(6);
 		this.activated = false;
+		this.type = 1;
 		scene.mediumAsteroids.push(this);
 	}
 
@@ -446,12 +458,18 @@ class MediumAsteroid extends Asteroid {
 }
 
 class SmallAsteroid extends Asteroid {
-	constructor(scene, x, y, rotation, speed) {
+	constructor(scene, x, y, rotation, speed, activated , type) {
 		//Use these to pass these back to the super class to construct the object
 		super(scene, x, y, "small_asteroid", rotation, speed);
 		this.setCircle(6);
 		this.setOffset(5, 5);
+		this.activated = true;
+		this.type = 0;
 		scene.smallAsteroids.push(this);
+	}
+
+	getactivated() {
+		return this.activated;
 	}
 
 	//Upon destruction, the asteroid deletes itself.
