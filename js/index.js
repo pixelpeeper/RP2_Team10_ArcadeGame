@@ -2,8 +2,8 @@
 console.log('index.js starting');
 var config = {
     type: Phaser.AUTO,
-    width: 960,
-    height: 720,
+    width: 1920,
+    height: 1440,
 	antialias: true,
 	scale: {
         mode: Phaser.Scale.FIT

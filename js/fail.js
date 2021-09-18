@@ -21,9 +21,9 @@ class failScreen extends Phaser.Scene {
 		pauseBackground.setOrigin(0,0);
 		
 		//displays mocking message of player
-		this.credits = this.add.text(gameDimentions.x/2,gameDimentions.y/2 - gameDimentions.y * 0.111,'YOU FAILED TO BLAST \'EM ALL.', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		this.credits = this.add.text(gameDimentions.x/2,gameDimentions.y/2 - gameDimentions.y * 0.111,'YOU FAILED TO BLAST \'EM ALL.', {font:'80px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
 		
-		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'PLAY AGAIN?', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'PLAY AGAIN?', {font:'80px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
 		TweenHelper.flashElement(this, screenText);
 		
 		
