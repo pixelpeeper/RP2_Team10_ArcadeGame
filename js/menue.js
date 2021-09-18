@@ -42,8 +42,12 @@ class menuScreen extends Phaser.Scene {
 		//spacebar text
 		this.shoot = this.add.text(gameDimentions.x/2,gameDimentions.y/2 + 275,'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		//start game text
-		this.start = this.add.text(gameDimentions.x/2,gameDimentions.y/2,'start game', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.start.setInteractive();
+		//this.start = this.add.text(gameDimentions.x/2,gameDimentions.y/2,'start game', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		//this.start.setInteractive();
+		
+		
+		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'Press ENTER to Start', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		TweenHelper.flashElement(this, screenText);
 		//start game
 		//this.input.on('pointerup', function () {
 		//	console.log('down');
@@ -146,5 +150,6 @@ class menuScreen extends Phaser.Scene {
 		
 	}
 }
+
 
 //put functions here
