@@ -30,33 +30,29 @@ class menuScreen extends Phaser.Scene {
 		//background
 		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
 		
-		this.controlls_wasd_w = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_w');
-		this.controlls_wasd_a = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_a');
-		this.controlls_wasd_s = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_s');
-		this.controlls_wasd_d = 		this.add.image(gameDimentions.x/2 - 300, 	gameDimentions.y/2			+ 250, 	'wasd_d');
-		this.controlls_spacebar = 		this.add.image(gameDimentions.x/2, 			gameDimentions.y/2 + 27.5	+ 250, 	'spacebar');
-		this.controlls_arrows_up = 		this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_up');
-		this.controlls_arrows_down = 	this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_down');
-		this.controlls_arrows_left = 	this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_left');
-		this.controlls_arrows_right = 	this.add.image(gameDimentions.x/2 + 300, 	gameDimentions.y/2			+ 250, 	'arrows_right');
-		//spacebar text
-		this.shoot = this.add.text(gameDimentions.x/2,gameDimentions.y/2 + 275,'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		//start game text
-		//this.start = this.add.text(gameDimentions.x/2,gameDimentions.y/2,'start game', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		//this.start.setInteractive();
+		this.controlls_wasd_w = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_w');
+		this.controlls_wasd_a = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_a');
+		this.controlls_wasd_s = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_s');
+		this.controlls_wasd_d = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_d');
+		this.controlls_spacebar = 		this.add.image(gameDimentions.x/2, 								gameDimentions.y/2 			+ gameDimentions.y * 0.38541, 	'spacebar');
+		this.controlls_arrows_up = 		this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_up');
+		this.controlls_arrows_down = 	this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_down');
+		this.controlls_arrows_left = 	this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_left');
+		this.controlls_arrows_right = 	this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_right');
+		//key binding lables
+		this.pewpew = 		this.add.text(gameDimentions.x/2							,gameDimentions.y/2 + gameDimentions.y * 0.38194,							'Pew Pew Lazers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnLeft = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.45	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Left', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnLeft = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,	'Left', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnRight = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,							'Right', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnRight = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.44	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.thrust = 		this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.35	,gameDimentions.y/2 + gameDimentions.y * 0.25,							'Thrust', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.thrust = 		this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.25,							'Thrust', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		
-		
+		//flashing text
 		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'Press ENTER to Start', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
 		TweenHelper.flashElement(this, screenText);
+		
 		//start game
-		//this.input.on('pointerup', function () {
-		//	console.log('down');
-		//	//this.scene.remove('menuScreen');
-		//	this.scene.start('gameScreen');
-		//	this.scene.setVisible(false,'menuScreen');
-		//	this.scene.pause('menuScreen');
-		//}, this);
-		//also starts the game
 		this.input.keyboard.on('keyup-' + 'ENTER',  function () {
 			console.log('starting with enter');
 			//this.scene.remove('menuScreen');
@@ -132,18 +128,9 @@ class menuScreen extends Phaser.Scene {
 
 
 		//credits
-		this.credits = this.add.text(gameDimentions.x/2,50,'Credits:', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,1);
-		//this.credits = this.add.text(gameDimentions.x/2 - 10,50,'Tech Artist\nEnginear\nArtist\nProduction\nEnginear', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'right'});
-		//this.credits.setOrigin(1,0);
-		//this.credits = this.add.text(gameDimentions.x/2 + 10,50,'Avery Byers\nJohnathan Conger\nKaisen Xue\nMykaela Parag\nParabav Bhatt', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'});
-		//this.credits.setOrigin(0,0);
-		this.credits = this.add.text(gameDimentions.x/2 - 10,50,'Artist\nEnginear\nEnginear\nProduction\nTech Artist', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'right'}).setOrigin(1,0);
-		this.credits = this.add.text(gameDimentions.x/2 + 10,50,'Kaisen Xue\nJohnathan Conger\nParabav Bhatt\nMykaela Parag\nAvery Byers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0,0);
-		//keyboard UI
-		//var keyUp = scene.input.keyboard.addKey('pointerup');  // Get key object
-		//	keyUp.on('down', function(event) {this.controlls.setTint(0xff0000)});
-		//	keyUp.on('up', function(event) {this.controlls.setTint(0xff0000)});
-	
+		this.credits = this.add.text(gameDimentions.x/2,gameDimentions.y * 0.0694,'Credits:', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,1);
+		this.credits = this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Artist\nEnginear\nEnginear\nProduction\nTech Artist', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'right'}).setOrigin(1,0);
+		this.credits = this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Kaisen Xue\nJohnathan Conger\nParabav Bhatt\nMykaela Parag\nAvery Byers', {font:'20px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0,0);
 	
 	}
 	update(time, delta){
