@@ -30,6 +30,8 @@ class menuScreen extends Phaser.Scene {
 		//background
 		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
 		
+		this.title = this.add.text(gameDimentions.x/2, 	gameDimentions.y/2	- gameDimentions.y * 0.125, 	'Blastroids', {font:'160px Sans-Serif',fontStyle: 'bold',color:'#00ff00',stroke: '#00ff00',strokeThickness: 0,fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		
 		this.controlls_wasd_w = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_w');
 		this.controlls_wasd_a = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_a');
 		this.controlls_wasd_s = 		this.add.image(gameDimentions.x/2 - gameDimentions.x * 0.3325, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'wasd_s');
