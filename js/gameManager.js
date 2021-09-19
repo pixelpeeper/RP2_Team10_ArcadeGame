@@ -1,5 +1,5 @@
 var cursors; //controls
-
+var finalcount;
 class gameScreen extends Phaser.Scene{
 	constructor(){
 		super('gameScreen');
@@ -35,7 +35,7 @@ class gameScreen extends Phaser.Scene{
 		this.largeAsteroids = [];
 		this.mediumAsteroids = [];
 		this.smallAsteroids = [];
-
+		
 		//this.asteroids.add(this.largeAsteroids);
 
 		//add colliders
@@ -52,7 +52,7 @@ class gameScreen extends Phaser.Scene{
 
 		spawnAsteroidWave(this, this.level * this.asteroidIncrease);
 		console.log('gameScreen creating complete');
-
+		finalcount = this.level * this.asteroidIncrease;
 
 		//pauses the game
 		this.input.keyboard.on("keyup-ESC", () => {
@@ -80,11 +80,11 @@ class gameScreen extends Phaser.Scene{
 				this.largeAsteroids = [];
 				this.mediumAsteroids = [];
 				this.smallAsteroids = [];
-
 				//increase wave?
 				this.level += 1;
 				this.hud.updateLevel(this.level);
-				spawnAsteroidWave(this, this.level); //make the new asteroids a function of the level & whatever difficulty multiplier we want
+				finalcount = this.level * this.asteroidIncrease;
+				spawnAsteroidWave(this, this.level * this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
 		} else {
 			console.log('player is dead');
@@ -106,6 +106,7 @@ function createColliders(scene) {
 			{
 			asteroid1.destroyAsteroid();
 			asteroid2.destroyAsteroid();
+			finalcount -= 2;
 			scene.score += scene.scoreIncrement;
 			scene.hud.updateScore(scene.score);
 			}
@@ -113,6 +114,13 @@ function createColliders(scene) {
 	}); //asteroid self-collisions
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
+		if(finalcount==1 && asteroid.type != 0 )
+		{
+			asteroid.destroyAsteroid();
+		}
+		
+		else
+		{
 		if(asteroid.type == 0)
 		{ 
 			asteroid.destroyAsteroid();
@@ -122,8 +130,9 @@ function createColliders(scene) {
 		else if(asteroid.getactivated() == false && asteroid.type!=0)
 		{
 			asteroid.setactivated(true);
-			this.time = scene.time.addEvent({delay: 1000, callback: () => {asteroid.setactivated(false)},
+			this.time = scene.time.addEvent({delay: 4000, callback: () => {asteroid.setactivated(false)},
 			scope: this})
+		}
 		}
 		//update score here
 		delete blast.destroy();
@@ -381,6 +390,8 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 		this.setMaxVelocity(500);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 	}
+
+	
 }
 
 class LargeAsteroid extends Asteroid {
@@ -393,7 +404,7 @@ class LargeAsteroid extends Asteroid {
 		this.setMaxVelocity(300);
 		scene.largeAsteroids.push(this);
 	}
-
+	
 	setactivated(value)
 	{
 		this.activated = value;
@@ -434,7 +445,7 @@ class LargeAsteroid extends Asteroid {
 		Math.floor(Math.random() * 360),
 		Math.floor(Phaser.Math.Between(50,125))
 		);
-
+		finalcount += 4;
 		this.destroy();
 	}
 }
@@ -450,7 +461,7 @@ class MediumAsteroid extends Asteroid {
 		this.setMaxVelocity(400);
 		scene.mediumAsteroids.push(this);
 	}
-
+	
 	setactivated(value)
 	{
 		this.activated = value;
@@ -507,6 +518,7 @@ class SmallAsteroid extends Asteroid {
 		this.type = 0;
 		scene.smallAsteroids.push(this);
 	}
+
 
 	getactivated() {
 		return this.activated;
