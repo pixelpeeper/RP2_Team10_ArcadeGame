@@ -407,7 +407,7 @@ class LargeAsteroid extends Asteroid {
 		this.x,
 		this.y,
 		Math.floor(Math.random() * 360),
-		Math.floor(Math.random() * 75) + 50
+		Math.floor(Phaser.Math.Between(50,125))
 		);
 
 		new MediumAsteroid(
@@ -415,7 +415,7 @@ class LargeAsteroid extends Asteroid {
 		this.x,
 		this.y,
 		Math.floor(Math.random() * 360),
-		Math.floor(Math.random() * 75) + 50
+		Math.floor(Phaser.Math.Between(50,125))
 		);
 
 		new MediumAsteroid(
@@ -423,7 +423,7 @@ class LargeAsteroid extends Asteroid {
 		this.x,
 		this.y,
 		Math.floor(Math.random() * 360),
-		Math.floor(Math.random() * 75) + 50
+		Math.floor(Phaser.Math.Between(50,125))
 		);
 
 		new MediumAsteroid(
@@ -431,7 +431,7 @@ class LargeAsteroid extends Asteroid {
 		this.x,
 		this.y,
 		Math.floor(Math.random() * 360),
-		Math.floor(Math.random() * 75) + 50
+		Math.floor(Phaser.Math.Between(50,125))
 		);
 
 		this.destroy();
@@ -465,7 +465,7 @@ class MediumAsteroid extends Asteroid {
 			this.x,
 			this.y,
 			Math.floor(Math.random() * 360),
-			Math.floor(Math.random() * 75) + 50
+			Math.floor(Phaser.Math.Between(100,200))
 		);
 
 		new SmallAsteroid(
@@ -473,7 +473,7 @@ class MediumAsteroid extends Asteroid {
 			this.x,
 			this.y,
 			Math.floor(Math.random() * 360),
-			Math.floor(Math.random() * 75) + 50
+			Math.floor(Phaser.Math.Between(100,200))
 		);
 		
 		new SmallAsteroid(
@@ -481,7 +481,7 @@ class MediumAsteroid extends Asteroid {
 			this.x,
 			this.y,
 			Math.floor(Math.random() * 360),
-			Math.floor(Math.random() * 75) + 50
+			Math.floor(Phaser.Math.Between(100,200))
 		);
 
 		new SmallAsteroid(
@@ -489,7 +489,7 @@ class MediumAsteroid extends Asteroid {
 			this.x,
 			this.y,
 			Math.floor(Math.random() * 360),
-			Math.floor(Math.random() * 75) + 50
+			Math.floor(Phaser.Math.Between(100,200))
 		);
 
 		this.destroy();
