@@ -69,10 +69,10 @@ class gameScreen extends Phaser.Scene{
 			this.player.shipShooting();
 
 			//screen wrapping
-			this.physics.world.wrap(this.player, 32);
-			this.physics.world.wrap(this.blasts, 20);
-			this.physics.world.wrapArray(this.largeAsteroids, 32);
-			this.physics.world.wrapArray(this.mediumAsteroids, 32);
+			this.physics.world.wrap(this.player, 64);
+			this.physics.world.wrap(this.blasts, 40);
+			this.physics.world.wrapArray(this.largeAsteroids, 64);
+			this.physics.world.wrapArray(this.mediumAsteroids, 48);
 			this.physics.world.wrapArray(this.smallAsteroids, 32);
 
 			//spawn new wave of asteroids if all have been destroyed
@@ -424,6 +424,14 @@ class LargeAsteroid extends Asteroid {
 		Math.floor(Math.random() * 75) + 50
 		);
 
+		new MediumAsteroid(
+		this.scene,
+		this.x,
+		this.y,
+		Math.floor(Math.random() * 360),
+		Math.floor(Math.random() * 75) + 50
+		);
+
 		this.destroy();
 	}
 }
@@ -449,6 +457,22 @@ class MediumAsteroid extends Asteroid {
 	}
 	//Upon destruction, this method creates 2 small asteroids, launches them in any direction, and then deletes itself.
 	destroyAsteroid() {
+		new SmallAsteroid(
+			this.scene,
+			this.x,
+			this.y,
+			Math.floor(Math.random() * 360),
+			Math.floor(Math.random() * 75) + 50
+		);
+
+		new SmallAsteroid(
+			this.scene,
+			this.x,
+			this.y,
+			Math.floor(Math.random() * 360),
+			Math.floor(Math.random() * 75) + 50
+		);
+		
 		new SmallAsteroid(
 			this.scene,
 			this.x,
