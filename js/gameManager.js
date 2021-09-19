@@ -245,8 +245,8 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		const x = scene.player.x;
 		const y = scene.player.y;
 
-		const offsetX = Math.cos(scene.player.rotation) * 30;
-		const offsetY = Math.sin(scene.player.rotation) * 30;
+		const offsetX = Math.cos(scene.player.rotation) * 10;
+		const offsetY = Math.sin(scene.player.rotation) * 10;
 
 
 		super(scene, x + offsetX, y + offsetY, "pewpew");
@@ -271,7 +271,8 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		});
 
 		//adjust collider
-		this.setSize(75, 12);
+		//this.setSize(75, 12);
+		this.setCircle(35);
 		this.setOffset(0.5, 0.5);
 	}
 }
