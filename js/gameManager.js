@@ -258,7 +258,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 
 		scene.physics.velocityFromRotation(
 			scene.player.rotation,
-			500 + scene.player.body.speed,
+			1000 + scene.player.body.speed,
 			this.body.velocity
 		);
 
