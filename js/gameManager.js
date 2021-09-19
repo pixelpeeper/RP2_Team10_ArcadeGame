@@ -8,10 +8,11 @@ class gameScreen extends Phaser.Scene{
 	preload ()
 	{
 		console.log('gameScreen loading assets');
-		this.load.image('ship', 'images/Spaceship1.png');
-		this.load.image('bullet', 'images/Bullet.png');
-		this.load.image('asteroidmedium', 'images/Asteriod1.png');
-		this.load.image('asteroidlarge', 'images/Asteriod2.png');
+		this.load.svg('ship', 'images/ship.svg');
+		this.load.svg('pewpew', 'images/pewpew.svg');
+		this.load.svg('asteroidlarge', 'images/asteroid1.svg');
+		this.load.svg('asteroidmedium', 'images/asteroid2.svg');
+		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
 		console.log('gameScreen loading complete');
 	}
 
@@ -158,6 +159,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.setMaxVelocity(playerMaxVelocity);
 
 		this.setCircle(32);
+		this.setOrigin(0.5,0.5);
 		this.setOffset(16, 16);
 
 		// this.scene.physics.add.collider(
@@ -247,7 +249,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		const offsetY = Math.sin(scene.player.rotation) * 30;
 
 
-		super(scene, x + offsetX, y + offsetY, "blast");
+		super(scene, x + offsetX, y + offsetY, "pewpew");
 		scene.add.existing(this);
 		scene.blasts.add(this);
 
@@ -267,7 +269,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		});
 
 		//adjust collider
-		this.setSize(12, 12);
+		this.setSize(75, 12);
 		this.setOffset(0, 0);
 	}
 }
@@ -378,8 +380,8 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 
 class LargeAsteroid extends Asteroid {
 	constructor(scene, x, y, rotation, speed, activated, type) {
-		super(scene, x, y, "asteroid_large", rotation, speed);
-		this.setCircle(56);
+		super(scene, x, y, "asteroidlarge", rotation, speed);
+		this.setCircle(95);
 		this.activated = false;
 		this.type = 2
 		scene.largeAsteroids.push(this);
@@ -424,8 +426,8 @@ class LargeAsteroid extends Asteroid {
 
 class MediumAsteroid extends Asteroid {
 	constructor(scene, x, y, rotation, speed, activated, type) {
-		super(scene, x, y, "medium_asteroid_a", rotation, speed);
-		this.setCircle(12);
+		super(scene, x, y, "asteroidmedium", rotation, speed);
+		this.setCircle(50);
 		this.setOffset(6);
 		this.activated = false;
 		this.type = 1;
@@ -465,8 +467,8 @@ class MediumAsteroid extends Asteroid {
 class SmallAsteroid extends Asteroid {
 	constructor(scene, x, y, rotation, speed, activated , type) {
 		//Use these to pass these back to the super class to construct the object
-		super(scene, x, y, "small_asteroid", rotation, speed);
-		this.setCircle(6);
+		super(scene, x, y, "asteroidsmall", rotation, speed);
+		this.setCircle(25);
 		this.setOffset(5, 5);
 		this.activated = true;
 		this.type = 0;
