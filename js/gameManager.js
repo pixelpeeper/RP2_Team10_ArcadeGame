@@ -270,7 +270,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 
 		//adjust collider
 		this.setSize(75, 12);
-		this.setOffset(0, 0);
+		this.setOffset(0.5, 0.5);
 	}
 }
 // Below function will create small asteroids on collision
