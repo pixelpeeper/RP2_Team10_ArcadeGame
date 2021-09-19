@@ -377,6 +377,7 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 		scene.physics.world.enableBody(this);
 		this.setBounce(1);
 		this.setMass(1);
+		this.setMaxVelocity(500);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 	}
 }
@@ -388,6 +389,7 @@ class LargeAsteroid extends Asteroid {
 		this.activated = false;
 		this.type = 2;
 		this.setMass(3);
+		this.setMaxVelocity(300);
 		scene.largeAsteroids.push(this);
 	}
 
@@ -444,6 +446,7 @@ class MediumAsteroid extends Asteroid {
 		this.activated = false;
 		this.type = 1;
 		this.setMass(2);
+		this.setMaxVelocity(400);
 		scene.mediumAsteroids.push(this);
 	}
 
