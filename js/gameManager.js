@@ -44,6 +44,7 @@ class gameScreen extends Phaser.Scene{
 		globalTHIS = this;
 
 		this.asteroidController = new AsteroidController();
+		this.dustController = new DustController();
 		this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -144,6 +145,10 @@ function createColliders(scene) {
 }
 function spawnAsteroidWave(scene, level) {
 	scene.asteroidController.genAsteroids(scene, level);
+}
+
+function spawnDust(quantity) {
+	this.scene.DustController.genDust(globalTHIS.scene, quantity)
 }
 
 class Player extends Phaser.Physics.Arcade.Sprite {
@@ -428,12 +433,16 @@ class LargeAsteroid extends Asteroid {
 		return this.activated;
 	}
 	destroyAsteroid() {
+		
+		
+		this.scene.dustController.genDust(this.scene, 10);
+
 		new MediumAsteroid(
-		this.scene,
-		this.x,
-		this.y,
-		Math.floor(Math.random() * 360),
-		Math.floor(Phaser.Math.Between(50,125))
+			this.scene,
+			this.x,
+			this.y,
+			Math.floor(Math.random() * 360),
+			Math.floor(Phaser.Math.Between(50,125))
 		);
 
 		new MediumAsteroid(
@@ -487,13 +496,6 @@ class MediumAsteroid extends Asteroid {
 	}
 	//Upon destruction, this method creates 2 small asteroids, launches them in any direction, and then deletes itself.
 	destroyAsteroid() {
-		new SmallAsteroid(
-			this.scene,
-			this.x,
-			this.y,
-			Math.floor(Math.random() * 360),
-			Math.floor(Phaser.Math.Between(100,200))
-		);
 
 		new SmallAsteroid(
 			this.scene,
@@ -602,5 +604,88 @@ class HUD {
 	displayGameOverOverlay() {
 		this.gameOverOverlay.gameOverText.visible = true;
 		this.gameOverOverlay.restartText.visible = true;
+	}
+}
+
+
+
+class DustController {
+
+	//create dust
+	genDust(scene, num) {
+		for (let i = 0; i < num; i++) {
+			this.spawnDust(scene);
+		}
+	}
+
+	//Deletes all dust from the field
+	clearDust() {
+		for (let i = 0; i < this.asteroids.length; i++) {
+			this.dust[i].destroy();
+		}
+	}
+
+	//this is called from genDust
+	spawnDust(scene) {
+		let side = Math.floor(Math.random() * 4);
+		let spawnLocation = this.getSpawn(
+		   side,
+		   scene.game.config.width,
+		   scene.game.config.height
+		);
+		let direction = this.getDirection(side);
+		return new Dust(scene, spawnLocation.x, spawnLocation.y, direction, Math.floor(Math.random() * 100) + 50);
+	}
+
+	//this spawns thigns on the edge of the screen which we dont need
+	getSpawn(side, gameWidth, gameHeight) {
+		switch (side) {
+		case 2:
+			return { x: 0, y: this.randomIntFromInterval(0, gameHeight) };
+		case 3:
+			return { x: gameWidth, y: this.randomIntFromInterval(0, gameHeight) };
+		case 1:
+			return { x: this.randomIntFromInterval(0, gameWidth), y: 0 };
+		case 0:
+			return { x: this.randomIntFromInterval(0, gameWidth), y: gameHeight };
+		}
+	}
+
+	getDirection(side) {
+		//Left side is tricky because it requires a range (in degrees) of
+		//Left: 270-360 or 0-90
+		switch (side) {
+		case 2:
+			if (this.randomIntFromInterval(0, 1) === 0) {
+				return this.randomIntFromInterval(280, 350);
+			} else {
+				return this.randomIntFromInterval(10, 80);
+			}
+		case 3:
+			return this.randomIntFromInterval(110, 250);
+		case 0:
+			return this.randomIntFromInterval(200, 340);
+		case 1:
+			return this.randomIntFromInterval(20, 160);
+		}
+	}
+
+	randomIntFromInterval(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	}
+}
+class Dust extends Phaser.Physics.Arcade.Sprite {
+	constructor(scene, x, y, texture, rotation, speed) {
+		super(scene, x, y, texture);
+		this.scene = scene;
+		scene.add.existing(this);
+		scene.asteroids.add(this);
+
+		this.setRotation(rotation);
+		scene.physics.world.enableBody(this);
+		this.setBounce(1);
+		this.setMass(1);
+		this.setMaxVelocity(500);
+		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 	}
 }
