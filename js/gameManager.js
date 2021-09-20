@@ -167,9 +167,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.setDrag(playerDrag);
 		this.setMaxVelocity(playerMaxVelocity);
 
-		this.setCircle(32);
-		this.setOrigin(0.5,0.5);
-		this.setOffset(16, 16);
+		this.setCircle(36);
+		this.setOrigin(0.41,0.55);
+		//this.setOffset(0, 0);
 
 		// this.scene.physics.add.collider(
 		//     this.scene.players,
