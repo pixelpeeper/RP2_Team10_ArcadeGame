@@ -9,11 +9,29 @@ class gameScreen extends Phaser.Scene{
 	preload ()
 	{
 		console.log('gameScreen loading assets');
+
+		// visual assets
 		this.load.svg('ship', 'images/ship.svg');
 		this.load.svg('pewpew', 'images/pewpew.svg');
 		this.load.svg('asteroidlarge', 'images/asteroid1.svg');
 		this.load.svg('asteroidmedium', 'images/asteroid2.svg');
 		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
+
+		// audio assets
+		this.load.audio('bgm', 'audio/.mp3');
+		// player sounds
+		this.load.audio('gun1', 'audio/.mp3');
+		this.load.audio('gun2', 'audio/.mp3');
+		this.load.audio('thrust1', 'audio/.mp3');
+		this.load.audio('thrust2', 'audio/.mp3');
+		this.load.audio('explosion', 'audio/.mp3');
+		// asteroid sounds
+		this.load.audio('coll1', 'audio/.mp3');
+
+		//play like this
+		// var music = this.sound.add('filename');
+		// music.play();
+
 		console.log('gameScreen loading complete');
 	}
 
