@@ -402,6 +402,7 @@ class LargeAsteroid extends Asteroid {
 		this.type = 2;
 		this.setMass(3);
 		this.setMaxVelocity(300);
+		this.setAngularVelocity(Phaser.Math.Between(2.5,7.5));
 		scene.largeAsteroids.push(this);
 	}
 	
@@ -459,6 +460,7 @@ class MediumAsteroid extends Asteroid {
 		this.type = 1;
 		this.setMass(2);
 		this.setMaxVelocity(400);
+		this.setAngularVelocity(Phaser.Math.Between(5,10));
 		scene.mediumAsteroids.push(this);
 	}
 	
@@ -516,6 +518,7 @@ class SmallAsteroid extends Asteroid {
 		this.setOffset(5, 5);
 		this.activated = true;
 		this.type = 0;
+		this.setAngularVelocity(Phaser.Math.Between(10,20));
 		scene.smallAsteroids.push(this);
 	}
 
