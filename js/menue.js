@@ -131,8 +131,8 @@ class menuScreen extends Phaser.Scene {
 
 		//credits
 		this.credits = this.add.text(gameDimentions.x/2,gameDimentions.y * 0.0694,'Credits:', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,1);
-		this.credits = this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Artist\nEnginear\nEnginear\nProduction\nTech Artist', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'right'}).setOrigin(1,0);
-		this.credits = this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Kaisen Xue\nJohnathan Conger\nParabav Bhatt\nMykaela Parag\nAvery Byers', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0,0);
+		this.credits = this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Artist\nEngineer\nEngineer\nProduction\nTech Artist', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'right'}).setOrigin(1,0);
+		this.credits = this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Kaisen Xue\nJohnathan Conger\nPranav Bhatt\nMykaela Parag\nAvery Byers', {font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0,0);
 	
 	}
 	update(time, delta){
