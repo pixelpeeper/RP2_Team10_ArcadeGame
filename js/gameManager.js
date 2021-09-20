@@ -1,5 +1,6 @@
 var cursors; //controls
 var finalcount;
+var globalTHIS;
 class gameScreen extends Phaser.Scene{
 	constructor(){
 		super('gameScreen');
@@ -40,6 +41,7 @@ class gameScreen extends Phaser.Scene{
 
 		//add colliders
 		createColliders(this);
+		globalTHIS = this;
 
 		this.asteroidController = new AsteroidController();
 		this.hud = new HUD(this);
@@ -87,10 +89,10 @@ class gameScreen extends Phaser.Scene{
 				spawnAsteroidWave(this, this.level * this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
 		} else {
-			console.log('player is dead');
-			//this.scene.remove('menuScreen');
-			this.scene.launch('failScreen');
-			this.scene.pause('gameScreen');
+			//console.log('player is dead');
+			////this.scene.remove('menuScreen');
+			//this.scene.launch('failScreen');
+			//this.scene.pause('gameScreen');
 		}
 	}
 }
@@ -200,6 +202,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			//     },
 			//     scene
 			// );
+			
+			this.time = scene.time.addEvent({
+				delay: 1500,
+				callback: () => {
+					console.log('player is dead');
+					//this.scene.remove('menuScreen');
+					globalTHIS.scene.launch('failScreen');
+					globalTHIS.scene.pause('gameScreen');
+					},
+				scope: this
+			});
 			this.destroy();
 		}
 
