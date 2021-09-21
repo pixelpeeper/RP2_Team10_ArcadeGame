@@ -45,6 +45,7 @@ class gameScreen extends Phaser.Scene{
 		this.level = 1;
 
 		this.blasts = this.physics.add.group();
+		this.powerups = this.physics.add.group();
 		this.players = this.physics.add.group();
 
 		this.player = new Player(this, 600, 400, 0.99, 0.13, 150);
@@ -133,26 +134,35 @@ function createColliders(scene) {
 	scene.physics.add.collider(scene.dust, scene.asteroids);
 	scene.physics.add.collider(scene.dust, scene.players);
 
+	//add collisions for players and asteroids
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
 		scene.soundController.playCollision();
 		scene.player.killPlayer(player, asteroid, scene);
 	});
+
+	//add collisions for asteroids and asteroids
 	scene.physics.add.collider(scene.asteroids, scene.asteroids, (asteroid1, asteroid2) =>{
 		if( asteroid1.getactivated() == true | asteroid2.getactivated() == true )
 		{
 			if(asteroid1.type!=0 && asteroid2.type !=0)
 			{
-			asteroid1.destroyAsteroid();
-			asteroid2.destroyAsteroid();
-			finalcount -= 2;
-			scene.score += scene.scoreIncrement;
-			scene.hud.updateScore(scene.score);
+				asteroid1.destroyAsteroid();
+				asteroid2.destroyAsteroid();
+				finalcount -= 2;
+				scene.score += scene.scoreIncrement;
+				scene.hud.updateScore(scene.score);
+
+				//create powerup
+				if(true){
+					new TripleShot(scene, asteroid1.x, asteroid1.y);
+				}
 			}
 		}
 
 		scene.soundController.playCollision();
 	}); //asteroid self-collisions
 
+	//add collisions for blasts and asteroids
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
 		console.log(finalcount);
 		if(finalcount<=1 && asteroid.type != 0 )
@@ -179,9 +189,16 @@ function createColliders(scene) {
 
 		//update score here
 		delete blast.destroy();
+	});
 
+	//add collisions for players and powerups
+	scene.physics.add.collider(scene.players, scene.powerups, (player, powerup) => {
+		console.log("powerup collected");
+		player.tripleShot = true;
+		powerup.destroy();
 	});
 }
+
 function spawnAsteroidWave(scene, level) {
 	scene.asteroidController.genAsteroids(scene, level);
 }
@@ -214,7 +231,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.bulletTime = 0;
 		this.playerAcceleration = playerAcceleration
 
-		this.tripleShot = true;
+		this.tripleShot = false;
 
 		scene.add.existing(this);
 		scene.players.add(this);
@@ -274,6 +291,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			this.destroy();
 		}
 
+		this.tripleShot = false;
 		this.playerAlive = false;
 	}
 
@@ -519,6 +537,7 @@ class LargeAsteroid extends Asteroid {
 		Math.floor(Math.random() * 360),
 		Math.floor(Phaser.Math.Between(50,125))
 		);
+		
 		finalcount += 4;
 		this.destroy();
 	}
@@ -606,11 +625,17 @@ class Powerup extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         scene.add.existing(this);
         scene.powerups.add(this);
+
+		scene.physics.world.enableBody(this);
     }
 }
 
 class TripleShot extends Powerup {
-
+	constructor(scene, x, y) {
+		super(scene, x, y, "tripleshot");
+		this.setCircle(25);
+		scene.powerups.push(this);
+	}
 }
 
 class HUD {
