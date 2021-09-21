@@ -701,6 +701,12 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		this.setMass(0.1);
 		this.setMaxVelocity(1000);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
+		
+		this.time = scene.time.addEvent({
+			delay: 8000,
+			callback: () => {this.destroy()},
+			scope: this
+		});
 	}
 }
 
