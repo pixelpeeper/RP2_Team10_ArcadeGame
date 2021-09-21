@@ -104,6 +104,10 @@ class gameScreen extends Phaser.Scene{
 }
 
 function createColliders(scene) {
+	
+	scene.physics.add.collider(scene.dust, scene.asteroids);
+	scene.physics.add.collider(scene.dust, scene.players);
+
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
 		scene.player.killPlayer(player, asteroid, scene);
 	});
@@ -145,9 +149,7 @@ function createColliders(scene) {
 		//update score here
 		delete blast.destroy();
 	
-	})
-	scene.physics.add.collider(scene.allDust, scene.asteroids);
-	scene.physics.add.collider(scene.allDust, scene.players);
+	});
 }
 function spawnAsteroidWave(scene, level) {
 	scene.asteroidController.genAsteroids(scene, level);
