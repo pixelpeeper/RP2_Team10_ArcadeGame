@@ -37,7 +37,11 @@ class gameScreen extends Phaser.Scene{
 
 	create ()
 	{
+		
 		console.log('gameScreen creating');
+		globalTHIS = this;
+		this.scene.launch('uiScreen');
+		//globalTHIS.events.emit('level', 1);
 		//game parameters
 		this.score = 0;
 		this.scoreIncrement = 50;
@@ -63,12 +67,11 @@ class gameScreen extends Phaser.Scene{
 
 		//add colliders
 		createColliders(this);
-		globalTHIS = this;
 
 		this.asteroidController = new AsteroidController();
 		this.dustController = new DustController();
 		this.soundController = new SoundController(this);
-		this.hud = new HUD(this);
+		//this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		//this.input.keyboard.on("keydown_ESCAPE", () => {
@@ -84,11 +87,13 @@ class gameScreen extends Phaser.Scene{
 		this.input.keyboard.on("keyup-ESC", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
+			this.scene.pause('uiScreen');
 		});
 		//pauses the game
 		this.input.keyboard.on("keyup-P", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
+			this.scene.pause('uiScreen');
 		});
 
 		this.soundController.playBGM();
@@ -115,7 +120,8 @@ class gameScreen extends Phaser.Scene{
 				this.smallAsteroids = [];
 				//increase wave?
 				this.level += 1;
-				this.hud.updateLevel(this.level);
+				//this.hud.updateLevel(this.level);
+				this.events.emit('level', this.level);
 				finalcount = this.level * this.asteroidIncrease;
 				spawnAsteroidWave(this, this.level + this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
@@ -146,7 +152,8 @@ function createColliders(scene) {
 			asteroid2.destroyAsteroid();
 			finalcount -= 2;
 			scene.score += scene.scoreIncrement;
-			scene.hud.updateScore(scene.score);
+			//scene.hud.updateScore(scene.score);
+			globalTHIS.events.emit('score', scene.score);
 			}
 		}
 
@@ -165,7 +172,8 @@ function createColliders(scene) {
 			{
 				asteroid.destroyAsteroid();
 				scene.score += scene.scoreIncrement;
-				scene.hud.updateScore(scene.score);
+				//scene.hud.updateScore(scene.score);
+				globalTHIS.events.emit('score', scene.score);
 			}
 			else if(asteroid.getactivated() == false && asteroid.type!=0)
 			{
@@ -577,64 +585,6 @@ class SmallAsteroid extends Asteroid {
 	}
 }
 
-class HUD {
-	constructor(scene) {
-		this.score = scene.add
-		.text(10, 10, "Score", {
-			font: "36px Arial"
-		})
-		.setScrollFactor(0);
-		this.scoreText = scene.add
-		.text(70, 10, "0", {
-			font: "36px Arial",
-			color: "yellow"
-		})
-		.setScrollFactor(0);
-
-		this.level = scene.add
-		.text(10, 30, "Level", {
-			font: "36px Arial"
-		})
-		.setScrollFactor(0);
-
-		this.level = scene.add
-		.text(10, 30, "Level", {
-			font: "36px Arial"
-		})
-		.setScrollFactor(0);
-
-		this.levelText = scene.add
-		.text(70, 30, "1", {
-			font: "36px Arial",
-			color: "yellow"
-		})
-		.setScrollFactor(0);
-
-		let gameOverText = scene.add.text(275, 100, "Game Over", {
-		font: "50px Arial"
-		});
-		gameOverText.setScrollFactor(0);
-		gameOverText.visible = false;
-
-		let restartText = scene.add.text(300, 200, "Press Enter To Restart");
-		restartText.setScrollFactor(0);
-		restartText.visible = false;
-
-		this.gameOverOverlay = { gameOverText, restartText };
-	}
-
-	updateScore(newScore) {
-		this.scoreText.setText(newScore);
-	}
-	updateLevel(newLevel) {
-		this.levelText.setText(newLevel);
-	}
-
-	displayGameOverOverlay() {
-		this.gameOverOverlay.gameOverText.visible = true;
-		this.gameOverOverlay.restartText.visible = true;
-	}
-}
 
 class DustController {
 

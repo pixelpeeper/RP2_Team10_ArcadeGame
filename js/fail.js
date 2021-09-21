@@ -10,6 +10,7 @@ class failScreen extends Phaser.Scene {
 	
 	create(){
 		console.log('fail creating');
+		this.scene.bringToTop();
 		
 		gameDimentions.x = this.sys.game.canvas.width;
 		gameDimentions.y = this.sys.game.canvas.height;

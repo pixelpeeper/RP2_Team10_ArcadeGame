@@ -25,7 +25,8 @@ var config = {
 		gameScreen,
 		winScreen,
 		failScreen,
-		pauseScreen
+		pauseScreen,
+		uiScreen
     ]
 };
 
