@@ -155,7 +155,7 @@ function spawnAsteroidWave(scene, level) {
 	scene.asteroidController.genAsteroids(scene, level);
 }
 
-function spawnDust(scene,quantity, x, y) {
+function spawnDusts(scene,quantity, x, y) {
 	scene.dustController.genDust(globalTHIS.scene, quantity, x, y)
 	
 	//new dust(
@@ -212,8 +212,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		if (this.playerAlive) {
 			//play death animation
 
+			spawnDusts(scene,50, this.x, this.y)
 			//destroy asteroid
 			asteroid.destroyAsteroid();
+
 
 			//use a delay before destroying the player object
 			// this.on(
@@ -450,7 +452,7 @@ class LargeAsteroid extends Asteroid {
 	}
 	destroyAsteroid() {
 		
-		spawnDust(this.scene,10,this.x,this.y);
+		spawnDusts(this.scene,10,this.x,this.y);
 
 		new MediumAsteroid(
 			this.scene,
@@ -650,7 +652,7 @@ class DustController {
 		console.log('spawning dust');
 		let side = Math.floor(Math.random() * 4);
 		let direction = this.getDirection(side);
-		return new Dust(globalTHIS, x, y, direction, Phaser.Math.Between(500,1000));
+		return new Dust(globalTHIS, x, y, 'dust', direction, Phaser.Math.Between(500,1000));
 	}
 
 	//this spawns thigns on the edge of the screen which we dont need
