@@ -711,7 +711,7 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 		
 		this.time = scene.time.addEvent({
-			delay: 5000,
+			delay: Phaser.Math.Between(3000,1000),
 			callback: () => {this.destroy()},
 			scope: this
 		});
