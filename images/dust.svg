@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="2.1418269mm"
+   height="2.3203125mm"
+   viewBox="0 0 2.1418269 2.3203125"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="dust.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="5.9295174"
+     inkscape:cx="16.611807"
+     inkscape:cy="1.602154"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <path
+       id="a"
+       d="M 0,0 H 1920 V 1080 H 0 Z" />
+    <path
+       id="c"
+       d="M 0,0 H 1920 V 1080 H 0 Z" />
+    <path
+       id="e"
+       d="M 777,757 H 942 V 918.75 H 777 Z" />
+    <path
+       id="g"
+       d="M 777,757 H 942 V 918.75 H 777 Z" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-92.098558,-122.79807)">
+    <ellipse
+       style="fill:#e6e6e6;fill-opacity:1;stroke-width:0.0661457"
+       id="path53"
+       cx="93.169472"
+       cy="123.95823"
+       rx="1.0709134"
+       ry="1.1601562" />
+    <g
+       transform="matrix(0.0881897,0,0,0.0881897,54.912166,70.528604)"
+       id="g105">
+      <clipPath
+         id="b">
+        <use
+           xlink:href="#a"
+           overflow="visible"
+           width="100%"
+           height="100%"
+           id="use61"
+           x="0"
+           y="0" />
+      </clipPath>
+      <g
+         clip-path="url(#b)"
+         id="g103">
+        <clipPath
+           id="d">
+          <use
+             xlink:href="#c"
+             overflow="visible"
+             width="100%"
+             height="100%"
+             id="use64"
+             x="0"
+             y="0" />
+        </clipPath>
+        <path
+           clip-path="url(#d)"
+           d="m 0,1.5 c 1.93,0 1.93,-3 0,-3 -1.93,0 -1.93,3 0,3"
+           id="path101" />
+      </g>
+    </g>
+  </g>
+</svg>
