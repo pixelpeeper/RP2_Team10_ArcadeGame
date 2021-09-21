@@ -153,7 +153,7 @@ function createColliders(scene) {
 				scene.hud.updateScore(scene.score);
 
 				//create powerup
-				if(true){
+				if(Math.floor(Math.random() * 5) === 0 && scene.player.tripleShot === false){
 					new TripleShot(scene, asteroid1.x, asteroid1.y);
 				}
 			}
@@ -816,7 +816,7 @@ class SoundController {
 		this.scene = scene;
 
 		// initialize sounds
-		scene.bgm = scene.sound.add('bgm', { loop: true });
+		scene.bgm = scene.sound.add('bgm', { loop: true, volume: 0.5 });
 		scene.gun1 = scene.sound.add('gun1');
 		scene.gun2 = scene.sound.add('gun2');
 		scene.thrust1 = scene.sound.add('thrust1');
@@ -827,10 +827,18 @@ class SoundController {
 	}
 
 	playBGM() {
+		if(this.scene.bgm.isPlaying) {
+			return;
+		}
+
 		this.scene.bgm.play();
 	}
 
 	playGun() {
+		// if(this.scene.gun1.isPlaying || this.scene.gun2.isPlaying) {
+		// 	return;
+		// }
+
 		switch (Math.floor(Math.random() * 2)) {
 			case 0:
 				this.scene.gun1.play();
@@ -844,6 +852,10 @@ class SoundController {
 	}
 
 	playThrust() {
+		if(this.scene.thrust1.isPlaying || this.scene.thrust2.isPlaying){
+			return;
+		}
+
 		switch (Math.floor(Math.random() * 2)) {
 			case 0:
 				this.scene.thrust1.play();
@@ -857,6 +869,10 @@ class SoundController {
 	}
 
 	playCollision() {
+		if(this.scene.coll1.isPlaying || this.scene.coll2.isPlaying || this.scene.coll3.isPlaying) {
+			return;
+		}
+
 		switch (Math.floor(Math.random() * 3)) {
 			case 0:
 				this.scene.coll1.play();
