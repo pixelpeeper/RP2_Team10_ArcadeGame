@@ -30,7 +30,7 @@ class gameScreen extends Phaser.Scene{
 		this.load.audio('coll1', 'audio/Collision_1.mp3');
 		this.load.audio('coll2', 'audio/Collision_2.mp3');
 		this.load.audio('coll3', 'audio/Collision_3.mp3');
-
+		this.load.image('sun', 'images/sun.png');
 		//play like this
 		// var music = this.sound.add('filename');
 		// music.play();
@@ -73,7 +73,7 @@ class gameScreen extends Phaser.Scene{
 		this.soundController = new SoundController(this);
 		this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
-
+		this.sun = this.physics.add.image(300,300,'sun');
 		//this.input.keyboard.on("keydown_ESCAPE", () => {
 		//	if (!this.player.playerAlive)
 		//		this.scene.restart();
@@ -82,6 +82,7 @@ class gameScreen extends Phaser.Scene{
 		spawnAsteroidWave(this, this.level * this.asteroidIncrease);
 		console.log('gameScreen creating complete');
 		finalcount = this.level * this.asteroidIncrease;
+
 
 		//pauses the game
 		this.input.keyboard.on("keyup-ESC", () => {
@@ -276,16 +277,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		// check for forward movement
 		if (this.scene.cursors.up.isDown)
 		{
+			this.scene.player.setAcceleration(0);
 			this.scene.physics.velocityFromRotation(
 				this.scene.player.rotation,
-				200,
+				500,
 				this.scene.player.body.acceleration);
 			//play thrust sound
 			this.scene.soundController.playThrust();
 		}
 		else
 		{
-			this.scene.player.setAcceleration(0);
+			globalTHIS.physics.accelerateToObject(globalTHIS.player, globalTHIS.sun ,20,50,50);
+	//		this.scene.player.setAcceleration(0);
 		}
 
 		// check for rotation
