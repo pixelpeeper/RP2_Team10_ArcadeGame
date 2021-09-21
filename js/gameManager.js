@@ -26,14 +26,11 @@ class gameScreen extends Phaser.Scene{
 		this.load.audio('thrust1', 'audio/1_Thrust.mp3');
 		this.load.audio('thrust2', 'audio/Thrust_2.mp3');
 		//this.load.audio('explosion', 'audio/.mp3');
+		
 		// asteroid sounds
 		this.load.audio('coll1', 'audio/Collision_1.mp3');
 		this.load.audio('coll2', 'audio/Collision_2.mp3');
 		this.load.audio('coll3', 'audio/Collision_3.mp3');
-
-		//play like this
-		// var music = this.sound.add('filename');
-		// music.play();
 
 		console.log('gameScreen loading complete');
 	}
@@ -584,31 +581,31 @@ class HUD {
 	constructor(scene) {
 		this.score = scene.add
 		.text(10, 10, "Score", {
-			font: "18px Arial"
+			font: "36px Arial"
 		})
 		.setScrollFactor(0);
 		this.scoreText = scene.add
 		.text(70, 10, "0", {
-			font: "18px Arial",
+			font: "36px Arial",
 			color: "yellow"
 		})
 		.setScrollFactor(0);
 
 		this.level = scene.add
 		.text(10, 30, "Level", {
-			font: "18px Arial"
+			font: "36px Arial"
 		})
 		.setScrollFactor(0);
 
 		this.level = scene.add
 		.text(10, 30, "Level", {
-			font: "18px Arial"
+			font: "36px Arial"
 		})
 		.setScrollFactor(0);
 
 		this.levelText = scene.add
 		.text(70, 30, "1", {
-			font: "18px Arial",
+			font: "36px Arial",
 			color: "yellow"
 		})
 		.setScrollFactor(0);
@@ -638,8 +635,6 @@ class HUD {
 		this.gameOverOverlay.restartText.visible = true;
 	}
 }
-
-
 
 class DustController {
 
@@ -706,7 +701,9 @@ class DustController {
 	randomIntFromInterval(min, max) {
 		return Math.floor(Math.random() * (max - min + 1) + min);
 	}
+
 }
+
 class Dust extends Phaser.Physics.Arcade.Sprite {
 	constructor(scene, x, y, texture, rotation, speed) {
 		super(scene, x, y, texture);
@@ -752,6 +749,7 @@ class dust extends Dust {
 		this.destroy();
 	}
 }
+
 class SoundController {
 	constructor(scene) {
 		this.scene = scene;
