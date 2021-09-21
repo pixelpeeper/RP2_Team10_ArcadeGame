@@ -700,7 +700,7 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		this.setRotation(rotation);
 		scene.physics.world.enableBody(this);
 		this.setBounce(1);
-		this.setMass(0.1);
+		this.setMass(1);
 		this.setMaxVelocity(1000);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 		
@@ -716,12 +716,12 @@ class dust extends Dust {
 	constructor(scene, x, y, rotation, speed, activated , type) {
 		console.log('making dust');
 		//Use these to pass these back to the super class to construct the object
-		super(scene, x, y, "dust", rotation, speed);
+		super(scene, x, y, 'dust', rotation, speed);
 		this.setCircle(5);
 		this.setOffset(0, 0);
 		this.activated = true;
 		this.type = 0;
-		this.setAngularVelocity(Phaser.Math.Between(10,20));
+		this.setAngularVelocity(Phaser.Math.Between(100,200));
 		scene.allDust.push(this);
 	}
 
