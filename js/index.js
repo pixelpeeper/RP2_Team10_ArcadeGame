@@ -13,7 +13,7 @@ var config = {
         arcade: {
             fps: 60,
             gravity: { y: 0 },
-            debug: true,
+            debug: false,
             debugShowBody: true,
             debugShowAngularVelocity: true,
             debugAngularVelocityColor: 0xffff00,
