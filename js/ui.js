@@ -38,28 +38,41 @@ class uiScreen extends Phaser.Scene {
 		
 		//displays UI
         this.score = this.add.text(20, 20, "Score", {
-			font: "36px Arial"
+			font: "36px Sans-Serif",
+			color:'#00ff00',
+			fontFamily: 'Arial',
+			align:'left'
 		})
 		.setScrollFactor(0);
 		this.scoreText = this.add.text(140, 20, "0", {
-			font: "36px Arial",
-			color: "yellow"
+			font: "36px Sans-Serif",
+			color:'#00ff00',
+			fontFamily: 'Arial',
+			align:'left'
 		})
 		.setScrollFactor(0);
 
 		this.level = this.add.text(20, 60, "Level", {
-			font: "36px Arial"
+			font: "36px Sans-Serif",
+			color:'#00ff00',
+			fontFamily: 'Arial',
+			align:'left'
 		})
 		.setScrollFactor(0);
 
 		this.level = this.add.text(20, 60, "Level", {
-			font: "36px Arial"
+			font: "36px Sans-Serif",
+			color:'#00ff00',
+			fontFamily: 'Arial',
+			align:'left'
 		})
 		.setScrollFactor(0);
 
 		this.levelText = this.add.text(140, 60, "1", {
-			font: "36px Arial",
-			color: "yellow"
+			font: "36px Sans-Serif",
+			color:'#00ff00',
+			fontFamily: 'Arial',
+			align:'left'
 		})
 		.setScrollFactor(0);
 		
@@ -76,7 +89,7 @@ class uiScreen extends Phaser.Scene {
 		
 	}
 	update(time, delta){
-		console.log('ui menue update');
+		//console.log('ui menue update');
 		
 	}
 }
