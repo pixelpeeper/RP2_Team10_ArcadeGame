@@ -42,7 +42,7 @@ class gameScreen extends Phaser.Scene{
 		this.score = 0;
 		this.scoreIncrement = 50;
 		this.asteroidIncrease = 2;
-		this.level = 1;
+		this.level = 4;
 
 		this.blasts = this.physics.add.group();
 		this.powerups = this.physics.add.group();
@@ -77,9 +77,9 @@ class gameScreen extends Phaser.Scene{
 		//		this.scene.restart();
 		//});
 
-		spawnAsteroidWave(this, this.level * this.asteroidIncrease);
+		spawnAsteroidWave(this, this.level + this.asteroidIncrease);
 		console.log('gameScreen creating complete');
-		finalcount = this.level * this.asteroidIncrease;
+		finalcount = this.level + this.asteroidIncrease;
 
 		//pauses the game
 		this.input.keyboard.on("keyup-ESC", () => {
@@ -194,7 +194,7 @@ function createColliders(scene) {
 	//add collisions for players and powerups
 	scene.physics.add.collider(scene.players, scene.powerups, (player, powerup) => {
 		console.log("powerup collected");
-		player.tripleShot = true;
+		scene.player.tripleShot = true;
 		powerup.destroy();
 	});
 }
@@ -335,7 +335,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 new Blast(this.scene, this.angle + 45, this.rotation + 0.35);
                 new Blast(this.scene, this.angle - 45, this.rotation - 0.35);
 			} else {
-				new Blast(this.scene);
+				new Blast(this.scene, this.angle, this.rotation);
 			}
 
 			//play blast sound
@@ -634,7 +634,7 @@ class TripleShot extends Powerup {
 	constructor(scene, x, y) {
 		super(scene, x, y, "tripleshot");
 		this.setCircle(25);
-		scene.powerups.push(this);
+		//scene.powerups.push(this);
 	}
 }
 
