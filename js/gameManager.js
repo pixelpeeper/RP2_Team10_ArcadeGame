@@ -444,7 +444,7 @@ class AsteroidController {
 		 randomIntFromInterval(min, max) {
 			 return Math.floor(Math.random() * (max - min + 1) + min);
 		 }
-	 }
+}
 
 class Asteroid extends Phaser.Physics.Arcade.Sprite {
 	constructor(scene, x, y, texture, rotation, speed) {
@@ -598,6 +598,19 @@ class SmallAsteroid extends Asteroid {
 		spawnDusts(this.scene,2,this.x,this.y);
 		this.destroy();
 	}
+}
+
+class Powerup extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, texture) {
+        super(scene, x, y, texture);
+        this.scene = scene;
+        scene.add.existing(this);
+        scene.powerups.add(this);
+    }
+}
+
+class TripleShot extends Powerup {
+
 }
 
 class HUD {
