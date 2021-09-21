@@ -107,7 +107,7 @@ function createColliders(scene) {
 	
 	scene.physics.add.collider(scene.dust, scene.asteroids);
 	scene.physics.add.collider(scene.dust, scene.players);
-
+	
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
 		scene.player.killPlayer(player, asteroid, scene);
 	});
@@ -192,6 +192,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 		this.setCircle(36);
 		this.setOrigin(0.41,0.55);
+		this.setMass(4);
+		this.setBounce(1);
 		//this.setOffset(0, 0);
 
 		// this.scene.physics.add.collider(
@@ -307,7 +309,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 			this.body.velocity
 		);
 
-		this.setMass(1);
+		this.setMass(10);
 		
 		this.time = scene.time.addEvent({
 			delay: 800,
@@ -319,6 +321,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		//this.setSize(75, 12);
 		this.setCircle(35);
 		this.setOffset(0.5, 0.5);
+		this.setMass(1.5);
 	}
 }
 // Below function will create small asteroids on collision
@@ -422,7 +425,7 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 		this.setRotation(rotation);
 		scene.physics.world.enableBody(this);
 		this.setBounce(1);
-		this.setMass(1);
+		this.setMass(2);
 		this.setMaxVelocity(500);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 	}
@@ -436,7 +439,7 @@ class LargeAsteroid extends Asteroid {
 		this.setCircle(95);
 		this.activated = false;
 		this.type = 2;
-		this.setMass(3);
+		this.setMass(4);
 		this.setMaxVelocity(300);
 		this.setAngularVelocity(Phaser.Math.Between(2.5,7.5));
 		scene.largeAsteroids.push(this);
@@ -452,7 +455,7 @@ class LargeAsteroid extends Asteroid {
 	}
 	destroyAsteroid() {
 		
-		spawnDusts(this.scene,10,this.x,this.y);
+		spawnDusts(this.scene,8,this.x,this.y);
 
 		new MediumAsteroid(
 			this.scene,
@@ -497,7 +500,7 @@ class MediumAsteroid extends Asteroid {
 		this.setOffset(6);
 		this.activated = false;
 		this.type = 1;
-		this.setMass(2);
+		this.setMass(3);
 		this.setMaxVelocity(400);
 		this.setAngularVelocity(Phaser.Math.Between(5,10));
 		scene.mediumAsteroids.push(this);
@@ -513,7 +516,7 @@ class MediumAsteroid extends Asteroid {
 	}
 	//Upon destruction, this method creates 2 small asteroids, launches them in any direction, and then deletes itself.
 	destroyAsteroid() {
-
+		spawnDusts(this.scene,4,this.x,this.y);
 		new SmallAsteroid(
 			this.scene,
 			this.x,
@@ -561,6 +564,7 @@ class SmallAsteroid extends Asteroid {
 
 	//Upon destruction, the asteroid deletes itself.
 	destroyAsteroid() {
+		spawnDusts(this.scene,2,this.x,this.y);
 		this.destroy();
 	}
 }
@@ -652,7 +656,7 @@ class DustController {
 		console.log('spawning dust');
 		let side = Math.floor(Math.random() * 4);
 		let direction = this.getDirection(side);
-		return new Dust(globalTHIS, x, y, 'dust', direction, Phaser.Math.Between(500,1000));
+		return new Dust(globalTHIS, x, y, 'dust', direction, Phaser.Math.Between(250,750));
 	}
 
 	//this spawns thigns on the edge of the screen which we dont need
@@ -702,12 +706,12 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		this.setRotation(rotation);
 		scene.physics.world.enableBody(this);
 		this.setBounce(1);
-		this.setMass(1);
-		this.setMaxVelocity(1000);
+		this.setMass(0.5);
+		this.setMaxVelocity(7500);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 		
 		this.time = scene.time.addEvent({
-			delay: 8000,
+			delay: 5000,
 			callback: () => {this.destroy()},
 			scope: this
 		});
