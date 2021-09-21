@@ -14,6 +14,7 @@ class gameScreen extends Phaser.Scene{
 		this.load.svg('asteroidlarge', 'images/asteroid1.svg');
 		this.load.svg('asteroidmedium', 'images/asteroid2.svg');
 		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
+		this.load.svg('dust', 'images/dust.svg');
 		console.log('gameScreen loading complete');
 	}
 
@@ -36,6 +37,10 @@ class gameScreen extends Phaser.Scene{
 		this.largeAsteroids = [];
 		this.mediumAsteroids = [];
 		this.smallAsteroids = [];
+		this.allDust = [];
+
+		
+		this.dust = this.physics.add.group();
 		
 		//this.asteroids.add(this.largeAsteroids);
 
@@ -72,9 +77,9 @@ class gameScreen extends Phaser.Scene{
 			this.player.shipShooting();
 
 			//screen wrapping
-			this.physics.world.wrap(this.player, 64);
+			this.physics.world.wrap(this.player, 32);
 			this.physics.world.wrap(this.blasts, 40);
-			this.physics.world.wrapArray(this.largeAsteroids, 64);
+			this.physics.world.wrapArray(this.largeAsteroids, 75);
 			this.physics.world.wrapArray(this.mediumAsteroids, 48);
 			this.physics.world.wrapArray(this.smallAsteroids, 32);
 
@@ -139,16 +144,25 @@ function createColliders(scene) {
 		}
 		//update score here
 		delete blast.destroy();
-		
 	
 	})
+	scene.physics.add.collider(scene.allDust, scene.asteroids);
+	scene.physics.add.collider(scene.allDust, scene.players);
 }
 function spawnAsteroidWave(scene, level) {
 	scene.asteroidController.genAsteroids(scene, level);
 }
 
-function spawnDust(quantity) {
-	this.scene.DustController.genDust(globalTHIS.scene, quantity)
+function spawnDust(scene,quantity, x, y) {
+	scene.dustController.genDust(globalTHIS.scene, quantity, x, y)
+	
+	//new dust(
+	//	this.scene,
+	//	this.x,
+	//	this.y,
+	//	Math.floor(Math.random() * 360),
+	//	Math.floor(Phaser.Math.Between(500,750))
+	//);
 }
 
 class Player extends Phaser.Physics.Arcade.Sprite {
@@ -434,8 +448,7 @@ class LargeAsteroid extends Asteroid {
 	}
 	destroyAsteroid() {
 		
-		
-		this.scene.dustController.genDust(this.scene, 10);
+		spawnDust(this.scene,10,this.x,this.y);
 
 		new MediumAsteroid(
 			this.scene,
@@ -612,29 +625,30 @@ class HUD {
 class DustController {
 
 	//create dust
-	genDust(scene, num) {
+	genDust(scene, num, x, y) {
+		
+		console.log('making lots of dust');
 		for (let i = 0; i < num; i++) {
-			this.spawnDust(scene);
+			this.spawnDust(scene, x, y);
 		}
 	}
 
 	//Deletes all dust from the field
 	clearDust() {
-		for (let i = 0; i < this.asteroids.length; i++) {
+		
+		console.log('clearing dust');
+		for (let i = 0; i < this.dust.length; i++) {
 			this.dust[i].destroy();
 		}
 	}
 
 	//this is called from genDust
-	spawnDust(scene) {
+	spawnDust(scene, x, y) {
+		
+		console.log('spawning dust');
 		let side = Math.floor(Math.random() * 4);
-		let spawnLocation = this.getSpawn(
-		   side,
-		   scene.game.config.width,
-		   scene.game.config.height
-		);
 		let direction = this.getDirection(side);
-		return new Dust(scene, spawnLocation.x, spawnLocation.y, direction, Math.floor(Math.random() * 100) + 50);
+		return new Dust(globalTHIS, x, y, direction, Phaser.Math.Between(500,1000));
 	}
 
 	//this spawns thigns on the edge of the screen which we dont need
@@ -679,13 +693,37 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		super(scene, x, y, texture);
 		this.scene = scene;
 		scene.add.existing(this);
-		scene.asteroids.add(this);
+		scene.dust.add(this);
 
 		this.setRotation(rotation);
 		scene.physics.world.enableBody(this);
 		this.setBounce(1);
-		this.setMass(1);
-		this.setMaxVelocity(500);
+		this.setMass(0.1);
+		this.setMaxVelocity(1000);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
+	}
+}
+
+class dust extends Dust {
+	constructor(scene, x, y, rotation, speed, activated , type) {
+		console.log('making dust');
+		//Use these to pass these back to the super class to construct the object
+		super(scene, x, y, "dust", rotation, speed);
+		this.setCircle(5);
+		this.setOffset(0, 0);
+		this.activated = true;
+		this.type = 0;
+		this.setAngularVelocity(Phaser.Math.Between(10,20));
+		scene.allDust.push(this);
+	}
+
+
+	getactivated() {
+		return this.activated;
+	}
+
+	//Upon destruction, the asteroid deletes itself.
+	destroyDust() {
+		this.destroy();
 	}
 }
