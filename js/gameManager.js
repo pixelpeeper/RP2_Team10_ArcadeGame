@@ -275,6 +275,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 	shipMovement() {
 		// check for forward movement
+		if(this.scene.cursors.up.isDown || this.scene.cursors.left.isDown || this.scene.cursors.right.isDown )
+		{this.scene.player.setAcceleration(0);
 		if (this.scene.cursors.up.isDown)
 		{
 			this.scene.player.setAcceleration(0);
@@ -287,8 +289,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		}
 		else
 		{
-			globalTHIS.physics.accelerateToObject(globalTHIS.player, globalTHIS.sun ,20,50,50);
-	//		this.scene.player.setAcceleration(0);
+			this.scene.player.setAcceleration(0);
 		}
 
 		// check for rotation
@@ -303,6 +304,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		else
 		{
 			this.scene.player.setAngularVelocity(0);
+		}
+		}
+		else
+		{
+			globalTHIS.physics.accelerateToObject(globalTHIS.player, globalTHIS.sun ,2,5,5);
 		}
 	}
 
