@@ -16,10 +16,10 @@ class menuScreen extends Phaser.Scene {
 		this.load.svg('wasd_s', 'images/wasd_s.svg');
 		this.load.svg('wasd_d', 'images/wasd_d.svg');
 		this.load.svg('spacebar', 'images/spacebar.svg');
-		this.load.svg('arrows_up', 'images/arrow_up.svg');
-		this.load.svg('arrows_down', 'images/arrow_down.svg');
-		this.load.svg('arrows_left', 'images/arrow_left.svg');
-		this.load.svg('arrows_right', 'images/arrow_right.svg');
+		this.load.svg('arrows_up', 'images/arrow_Up.svg');
+		this.load.svg('arrows_down', 'images/arrow_Down.svg');
+		this.load.svg('arrows_left', 'images/arrow_Left.svg');
+		this.load.svg('arrows_right', 'images/arrow_Right.svg');
 	}
 	
 	create(){

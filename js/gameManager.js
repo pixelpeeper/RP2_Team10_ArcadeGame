@@ -88,6 +88,11 @@ class gameScreen extends Phaser.Scene{
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
 		});
+		//pauses the game
+		this.input.keyboard.on("keyup-P", () => {
+			this.scene.launch('pauseScreen');
+			this.scene.pause('gameScreen');
+		});
 
 		this.soundController.playBGM();
 	}
@@ -152,7 +157,8 @@ function createColliders(scene) {
 	}); //asteroid self-collisions
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
-		if(finalcount==1 && asteroid.type != 0 )
+		console.log(finalcount);
+		if(finalcount<=1 && asteroid.type != 0 )
 		{
 			asteroid.destroyAsteroid();
 		}
