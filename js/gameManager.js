@@ -9,12 +9,32 @@ class gameScreen extends Phaser.Scene{
 	preload ()
 	{
 		console.log('gameScreen loading assets');
+
+		// visual assets
 		this.load.svg('ship', 'images/ship.svg');
 		this.load.svg('pewpew', 'images/pewpew.svg');
 		this.load.svg('asteroidlarge', 'images/asteroid1.svg');
 		this.load.svg('asteroidmedium', 'images/asteroid2.svg');
 		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
 		this.load.svg('dust', 'images/dust.svg');
+
+		// audio assets
+		this.load.audio('bgm', 'audio/BG_Music.mp3');
+		// player sounds
+		this.load.audio('gun1', 'audio/Push_Gun_1.mp3');
+		this.load.audio('gun2', 'audio/Push_Gun_2.mp3');
+		this.load.audio('thrust1', 'audio/1_Thrust.mp3');
+		this.load.audio('thrust2', 'audio/Thrust_2.mp3');
+		//this.load.audio('explosion', 'audio/.mp3');
+		// asteroid sounds
+		this.load.audio('coll1', 'audio/Collision_1.mp3');
+		this.load.audio('coll2', 'audio/Collision_2.mp3');
+		this.load.audio('coll3', 'audio/Collision_3.mp3');
+
+		//play like this
+		// var music = this.sound.add('filename');
+		// music.play();
+
 		console.log('gameScreen loading complete');
 	}
 
@@ -24,7 +44,7 @@ class gameScreen extends Phaser.Scene{
 		//game parameters
 		this.score = 0;
 		this.scoreIncrement = 50;
-		this.asteroidIncrease = 3;
+		this.asteroidIncrease = 2;
 		this.level = 1;
 
 		this.blasts = this.physics.add.group();
@@ -39,9 +59,9 @@ class gameScreen extends Phaser.Scene{
 		this.smallAsteroids = [];
 		this.allDust = [];
 
-		
+
 		this.dust = this.physics.add.group();
-		
+
 		//this.asteroids.add(this.largeAsteroids);
 
 		//add colliders
@@ -50,6 +70,7 @@ class gameScreen extends Phaser.Scene{
 
 		this.asteroidController = new AsteroidController();
 		this.dustController = new DustController();
+		this.soundController = new SoundController(this);
 		this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -67,6 +88,8 @@ class gameScreen extends Phaser.Scene{
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
 		});
+
+		this.soundController.playBGM();
 	}
 
 	update ()
@@ -92,7 +115,7 @@ class gameScreen extends Phaser.Scene{
 				this.level += 1;
 				this.hud.updateLevel(this.level);
 				finalcount = this.level * this.asteroidIncrease;
-				spawnAsteroidWave(this, this.level * this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
+				spawnAsteroidWave(this, this.level + this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
 		} else {
 			//console.log('player is dead');
@@ -104,11 +127,12 @@ class gameScreen extends Phaser.Scene{
 }
 
 function createColliders(scene) {
-	
+
 	scene.physics.add.collider(scene.dust, scene.asteroids);
 	scene.physics.add.collider(scene.dust, scene.players);
-	
+
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
+		scene.soundController.playCollision();
 		scene.player.killPlayer(player, asteroid, scene);
 	});
 	scene.physics.add.collider(scene.asteroids, scene.asteroids, (asteroid1, asteroid2) =>{
@@ -123,6 +147,8 @@ function createColliders(scene) {
 			scene.hud.updateScore(scene.score);
 			}
 		}
+
+		scene.soundController.playCollision();
 	}); //asteroid self-collisions
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
@@ -130,25 +156,27 @@ function createColliders(scene) {
 		{
 			asteroid.destroyAsteroid();
 		}
-		
 		else
 		{
-		if(asteroid.type == 0)
-		{ 
-			asteroid.destroyAsteroid();
-			scene.score += scene.scoreIncrement;
-			scene.hud.updateScore(scene.score);
+			if(asteroid.type == 0)
+			{
+				asteroid.destroyAsteroid();
+				scene.score += scene.scoreIncrement;
+				scene.hud.updateScore(scene.score);
+			}
+			else if(asteroid.getactivated() == false && asteroid.type!=0)
+			{
+				asteroid.setactivated(true);
+				this.time = scene.time.addEvent({delay: 4000, callback: () => {asteroid.setactivated(false)},
+				scope: this})
+			}
 		}
-		else if(asteroid.getactivated() == false && asteroid.type!=0)
-		{
-			asteroid.setactivated(true);
-			this.time = scene.time.addEvent({delay: 4000, callback: () => {asteroid.setactivated(false)},
-			scope: this})
-		}
-		}
+
+		scene.soundController.playCollision();
+
 		//update score here
 		delete blast.destroy();
-	
+
 	});
 }
 function spawnAsteroidWave(scene, level) {
@@ -157,7 +185,7 @@ function spawnAsteroidWave(scene, level) {
 
 function spawnDusts(scene,quantity, x, y) {
 	scene.dustController.genDust(globalTHIS.scene, quantity, x, y)
-	
+
 	//new dust(
 	//	this.scene,
 	//	this.x,
@@ -227,7 +255,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			//     },
 			//     scene
 			// );
-			
+
 			this.time = scene.time.addEvent({
 				delay: 1500,
 				callback: () => {
@@ -252,6 +280,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 				this.scene.player.rotation,
 				200,
 				this.scene.player.body.acceleration);
+			//play thrust sound
+			this.scene.soundController.playThrust();
 		}
 		else
 		{
@@ -277,6 +307,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		if (this.scene.cursors.space.isDown && this.bulletTime <= this.scene.time.now && this.scene.blasts.getLength() < 3) {
 			this.bulletTime = this.scene.time.now + this.bulletFrequency;
 			new Blast(this.scene);
+
+			//play blast sound
+			this.scene.soundController.playGun();
 		}
 	}
 
@@ -310,7 +343,7 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		);
 
 		this.setMass(10);
-		
+
 		this.time = scene.time.addEvent({
 			delay: 800,
 			callback: () => {this.destroy()},
@@ -324,36 +357,8 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
 		this.setMass(1.5);
 	}
 }
-// Below function will create small asteroids on collision
-function createnewsmallasteroids(_asteroid1,_asteroid2)
-{
-	createsmallasteroids(
-		Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-		Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-		Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-		Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-
-	);
-	_asteroid1.disableBody(true,true);
-	_asteroid2.disableBody(true,true);
-}
-// Below function will create medium asteroids on collision
-function createnewmediumasteroids(_asteroid1,_asteroid2)
-{
-	createmediumasteroids(
-		Phaser.Math.Average([_asteroid1.body.center.x, _asteroid2.body.center.x]) + Phaser.Math.Between(-32,32),
-		Phaser.Math.Average([_asteroid1.body.center.y, _asteroid2.body.center.y]) + Phaser.Math.Between(-32,32),
-		Phaser.Math.Average([_asteroid1.body.velocity.x, _asteroid2.body.velocity.x]) * Phaser.Math.Between(-4,4),
-		Phaser.Math.Average([_asteroid1.body.velocity.y, _asteroid2.body.velocity.y]) * Phaser.Math.Between(-4,4),
-
-	);
-	_asteroid1.disableBody(true,true);
-	_asteroid2.disableBody(true,true);
-}
-
 
 class AsteroidController {
-
 		 genAsteroids(scene, num) {
 			 for (let i = 0; i < num; i++) {
 				 this.spawnAsteroid(scene);
@@ -430,7 +435,7 @@ class Asteroid extends Phaser.Physics.Arcade.Sprite {
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
 	}
 
-	
+
 }
 
 class LargeAsteroid extends Asteroid {
@@ -444,7 +449,7 @@ class LargeAsteroid extends Asteroid {
 		this.setAngularVelocity(Phaser.Math.Between(2.5,7.5));
 		scene.largeAsteroids.push(this);
 	}
-	
+
 	setactivated(value)
 	{
 		this.activated = value;
@@ -454,7 +459,7 @@ class LargeAsteroid extends Asteroid {
 		return this.activated;
 	}
 	destroyAsteroid() {
-		
+
 		spawnDusts(this.scene,8,this.x,this.y);
 
 		new MediumAsteroid(
@@ -505,7 +510,7 @@ class MediumAsteroid extends Asteroid {
 		this.setAngularVelocity(Phaser.Math.Between(5,10));
 		scene.mediumAsteroids.push(this);
 	}
-	
+
 	setactivated(value)
 	{
 		this.activated = value;
@@ -524,7 +529,7 @@ class MediumAsteroid extends Asteroid {
 			Math.floor(Math.random() * 360),
 			Math.floor(Phaser.Math.Between(100,200))
 		);
-		
+
 		new SmallAsteroid(
 			this.scene,
 			this.x,
@@ -634,7 +639,7 @@ class DustController {
 
 	//create dust
 	genDust(scene, num, x, y) {
-		
+
 		console.log('making lots of dust');
 		for (let i = 0; i < num; i++) {
 			this.spawnDust(scene, x, y);
@@ -643,7 +648,7 @@ class DustController {
 
 	//Deletes all dust from the field
 	clearDust() {
-		
+
 		console.log('clearing dust');
 		for (let i = 0; i < this.dust.length; i++) {
 			this.dust[i].destroy();
@@ -652,7 +657,7 @@ class DustController {
 
 	//this is called from genDust
 	spawnDust(scene, x, y) {
-		
+
 		console.log('spawning dust');
 		let side = Math.floor(Math.random() * 4);
 		let direction = this.getDirection(side);
@@ -709,7 +714,7 @@ class Dust extends Phaser.Physics.Arcade.Sprite {
 		this.setMass(0.5);
 		this.setMaxVelocity(7500);
 		scene.physics.velocityFromAngle(rotation, speed, this.body.velocity);
-		
+
 		this.time = scene.time.addEvent({
 			delay: Phaser.Math.Between(3000,1000),
 			callback: () => {this.destroy()},
@@ -739,5 +744,66 @@ class dust extends Dust {
 	//Upon destruction, the asteroid deletes itself.
 	destroyDust() {
 		this.destroy();
+	}
+}
+class SoundController {
+	constructor(scene) {
+		this.scene = scene;
+
+		// initialize sounds
+		scene.bgm = scene.sound.add('bgm', { loop: true });
+		scene.gun1 = scene.sound.add('gun1');
+		scene.gun2 = scene.sound.add('gun2');
+		scene.thrust1 = scene.sound.add('thrust1');
+		scene.thrust2 = scene.sound.add('thrust2');
+		scene.coll1 = scene.sound.add('coll1');
+		scene.coll2 = scene.sound.add('coll2');
+		scene.coll3 = scene.sound.add('coll3');
+	}
+
+	playBGM() {
+		this.scene.bgm.play();
+	}
+
+	playGun() {
+		switch (Math.floor(Math.random() * 2)) {
+			case 0:
+				this.scene.gun1.play();
+				break;
+			case 1:
+				this.scene.gun2.play();
+				break;
+			default:
+				break;
+		}
+	}
+
+	playThrust() {
+		switch (Math.floor(Math.random() * 2)) {
+			case 0:
+				this.scene.thrust1.play();
+				break;
+			case 1:
+				this.scene.thrust2.play();
+				break;
+			default:
+				break;
+		}
+	}
+
+	playCollision() {
+		switch (Math.floor(Math.random() * 3)) {
+			case 0:
+				this.scene.coll1.play();
+				break;
+			case 1:
+				this.scene.coll2.play();
+				break;
+			case 2:
+				this.scene.coll3.play();
+				break;
+			default:
+				break;
+		}
 	}
 }
