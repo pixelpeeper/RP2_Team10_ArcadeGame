@@ -214,6 +214,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.bulletTime = 0;
 		this.playerAcceleration = playerAcceleration
 
+		this.tripleShot = true;
+
 		scene.add.existing(this);
 		scene.players.add(this);
 
@@ -307,9 +309,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	shipShooting() {
-		if (this.scene.cursors.space.isDown && this.bulletTime <= this.scene.time.now && this.scene.blasts.getLength() < 3) {
+		if (this.canShoot()) {
 			this.bulletTime = this.scene.time.now + this.bulletFrequency;
-			new Blast(this.scene);
+			
+			if(this.tripleShot === true) {
+				new Blast(this.scene, this.angle, this.rotation);
+                new Blast(this.scene, this.angle + 45, this.rotation + 0.35);
+                new Blast(this.scene, this.angle - 45, this.rotation - 0.35);
+			} else {
+				new Blast(this.scene);
+			}
 
 			//play blast sound
 			this.scene.soundController.playGun();
@@ -321,43 +330,57 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.setVelocity(0);
 		this.setAcceleration(0);
 	}
+
+	canShoot() {
+		if (this.scene.cursors.space.isDown && this.bulletTime <= this.scene.time.now && this.scene.blasts.getLength() < 3) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 class Blast extends Phaser.Physics.Arcade.Sprite {
-	constructor(scene) {
+	constructor(scene, angle, rotation) {
 		const x = scene.player.x;
 		const y = scene.player.y;
 
-		const offsetX = Math.cos(scene.player.rotation) * 10;
-		const offsetY = Math.sin(scene.player.rotation) * 10;
+        //const offsetX = Math.cos(scene.player.rotation) * 10;
+        //const offsetY = Math.sin(scene.player.rotation) * 10;
 
+        const offsetX = Math.cos(rotation) * 10;
+        const offsetY = Math.sin(rotation) * 10;
 
-		super(scene, x + offsetX, y + offsetY, "pewpew");
-		scene.add.existing(this);
-		scene.blasts.add(this);
+        super(scene, x + offsetX, y + offsetY, "pewpew");
+        scene.add.existing(this);
+        scene.blasts.add(this);
+        
+        //this.setAngle(scene.player.angle);
+        this.setAngle(angle);
+        
+        scene.physics.world.enableBody(this);
 
-		this.setAngle(scene.player.angle);
-		scene.physics.world.enableBody(this);
+        scene.physics.velocityFromRotation(
+            //scene.player.rotation,
+            rotation,
+            1000 + scene.player.body.speed,
+            this.body.velocity
+        );
 
-		scene.physics.velocityFromRotation(
-			scene.player.rotation,
-			1000 + scene.player.body.speed,
-			this.body.velocity
-		);
+        this.setMass(10);
 
-		this.setMass(10);
+        this.time = scene.time.addEvent({
+            delay: 800,
+            callback: () => {this.destroy()},
+            scope: this
+        });
 
-		this.time = scene.time.addEvent({
-			delay: 800,
-			callback: () => {this.destroy()},
-			scope: this
-		});
+        //adjust collider
+        //this.setSize(75, 12);
+        this.setCircle(35);
+        this.setOffset(0.5, 0.5);
+        this.setMass(1.5);
 
-		//adjust collider
-		//this.setSize(75, 12);
-		this.setCircle(35);
-		this.setOffset(0.5, 0.5);
-		this.setMass(1.5);
 	}
 }
 
