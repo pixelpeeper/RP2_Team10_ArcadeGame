@@ -1,6 +1,9 @@
 var cursors; //controls
 var finalcount;
 var globalTHIS;
+var activeshockwave;
+var shockwavedelay;
+//var SW;
 class gameScreen extends Phaser.Scene{
 	constructor(){
 		super('gameScreen');
@@ -17,7 +20,7 @@ class gameScreen extends Phaser.Scene{
 		this.load.svg('asteroidmedium', 'images/asteroid2.svg');
 		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
 		this.load.svg('dust', 'images/dust.svg');
-
+		this.load.svg('circle', 'images/circle.svg');
 		// audio assets
 		this.load.audio('bgm', 'audio/BG_Music.mp3');
 		// player sounds
@@ -40,16 +43,17 @@ class gameScreen extends Phaser.Scene{
 
 	create ()
 	{
+		shockwavedelay=true;
 		console.log('gameScreen creating');
 		//game parameters
 		this.score = 0;
 		this.scoreIncrement = 50;
-		this.asteroidIncrease = 2;
+		this.asteroidIncrease = 6;
 		this.level = 1;
 
 		this.blasts = this.physics.add.group();
 		this.players = this.physics.add.group();
-
+		this.shockwaves = this.physics.add.group();
 		this.player = new Player(this, 600, 400, 0.99, 0.13, 150);
 
 		//create physics for asteroids and track by size
@@ -59,7 +63,7 @@ class gameScreen extends Phaser.Scene{
 		this.smallAsteroids = [];
 		this.allDust = [];
 
-
+		this.physics.add.overlap(this.shockwaves, this.asteroids, overlapAOE);
 		this.dust = this.physics.add.group();
 
 		//this.asteroids.add(this.largeAsteroids);
@@ -99,11 +103,16 @@ class gameScreen extends Phaser.Scene{
 
 	update ()
 	{
-		console.log('gameScreen updating');
+		//console.log('gameScreen updating');
 		if (this.player.playerAlive) {
 			this.player.shipMovement();
 			this.player.shipShooting();
 
+			if(activeshockwave)
+			{
+				activeshockwave.updatescaling();
+				}
+			else{}
 			//screen wrapping
 			this.physics.world.wrap(this.player, 32);
 			this.physics.world.wrap(this.blasts, 40);
@@ -155,9 +164,11 @@ function createColliders(scene) {
 
 		scene.soundController.playCollision();
 	}); //asteroid self-collisions
+	// scene.physics.add.collider(scene.shockwaves, scene.asteroids, (shockwave, asteroid) => {
+	//
+	// })
 
 	scene.physics.add.collider(scene.blasts, scene.asteroids, (blast, asteroid) => {
-		console.log(finalcount);
 		if(finalcount<=1 && asteroid.type != 0 )
 		{
 			asteroid.destroyAsteroid();
@@ -317,6 +328,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			//play blast sound
 			this.scene.soundController.playGun();
 		}
+		else if(this.scene.cursors.down.isDown && shockwavedelay==true)
+		{
+			shockwavedelay = false;
+			activeshockwave = new Shockwave(this.scene);
+			this.time = this.scene.time.addEvent({
+				delay: 2000,
+				callback: () => {settrue();},
+				scope: this
+			});
+		}
 	}
 
 	reset() {
@@ -324,6 +345,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		this.setVelocity(0);
 		this.setAcceleration(0);
 	}
+}
+
+class Shockwave extends Phaser.Physics.Arcade.Sprite {
+	constructor(scene) {
+		const x = scene.player.x;
+		const y = scene.player.y;
+
+		let scalex=0.1; let scaley=0.1;
+		super(scene, x, y, "circle");
+		scene.add.existing(this);
+		scene.shockwaves.add(this);
+		scene.physics.world.enableBody(this);
+		this.setActive(true);
+		this.setMass(10);
+		this.setScale(scalex,scaley);
+		this.time = scene.time.addEvent({
+			delay: 6000,
+			callback: () => {this.destroy();},
+			scope: this
+		});
+	}
+	 updatescaling()
+	 {
+	 	this.scaleX += 0.06;
+	 	this.scaleY += 0.06;
+	 }
 }
 
 class Blast extends Phaser.Physics.Arcade.Sprite {
@@ -812,4 +859,13 @@ class SoundController {
 				break;
 		}
 	}
+}
+function settrue()
+{
+	shockwavedelay=true;
+}
+function overlapAOE(shockwave, asteroid)
+{
+	asteroid.destroyAsteroid();
+	//asteroid.setVelocity(-asteroid.body.velocity.x  * 2, -asteroid.body.velocity.y * 2);
 }
