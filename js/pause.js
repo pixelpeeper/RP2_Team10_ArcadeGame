@@ -23,7 +23,7 @@ class pauseScreen extends Phaser.Scene {
 	}
 	
 	create() {
-		
+		this.scene.bringToTop();
 		console.log('pause creating');
 		gameDimentions.x = this.sys.game.canvas.width;
 		gameDimentions.y = this.sys.game.canvas.height;
@@ -66,21 +66,31 @@ class pauseScreen extends Phaser.Scene {
 		//}, this);
 		//closes the pause menu
 		this.input.keyboard.on("keyup-ESC", () => {
-			console.log('down');
+			console.log('resuming game');
 			this.scene.wake('gameScreen');
+			this.scene.wake('uiScreen');
 			this.scene.setVisible(false,'pauseScreen');
 			this.scene.pause('pauseScreen');
 		}, this);
 		this.input.keyboard.on("keyup-P", () => {
-			console.log('down');
+			console.log('resuming game');
 			this.scene.wake('gameScreen');
+			this.scene.wake('uiScreen');
+			this.scene.setVisible(false,'pauseScreen');
+			this.scene.pause('pauseScreen');
+		}, this);
+		this.input.keyboard.on('keyup-' + 'ENTER',  function () {
+			console.log('resuming game');
+			this.scene.wake('gameScreen');
+			this.scene.wake('uiScreen');
 			this.scene.setVisible(false,'pauseScreen');
 			this.scene.pause('pauseScreen');
 		}, this);
 		//resets the game
 		this.input.keyboard.on("keyup-SHIFT", () => {
-			console.log('down');
+			console.log('restarting game');
 			this.scene.start('gameScreen');
+			this.scene.start('uiScreen');
 			this.scene.setVisible(false,'pauseScreen');
 			this.scene.pause('pauseScreen');
 		}, this);

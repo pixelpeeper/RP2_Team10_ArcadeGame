@@ -26,7 +26,7 @@ class gameScreen extends Phaser.Scene{
 		this.load.audio('thrust1', 'audio/1_Thrust.mp3');
 		this.load.audio('thrust2', 'audio/Thrust_2.mp3');
 		//this.load.audio('explosion', 'audio/.mp3');
-		
+
 		// asteroid sounds
 		this.load.audio('coll1', 'audio/Collision_1.mp3');
 		this.load.audio('coll2', 'audio/Collision_2.mp3');
@@ -37,7 +37,11 @@ class gameScreen extends Phaser.Scene{
 
 	create ()
 	{
+
 		console.log('gameScreen creating');
+		globalTHIS = this;
+		this.scene.launch('uiScreen');
+		//globalTHIS.events.emit('level', 1);
 		//game parameters
 		this.score = 0;
 		this.scoreIncrement = 50;
@@ -64,12 +68,11 @@ class gameScreen extends Phaser.Scene{
 
 		//add colliders
 		createColliders(this);
-		globalTHIS = this;
 
 		this.asteroidController = new AsteroidController();
 		this.dustController = new DustController();
 		this.soundController = new SoundController(this);
-		this.hud = new HUD(this);
+		//this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
 
 		//this.input.keyboard.on("keydown_ESCAPE", () => {
@@ -85,11 +88,13 @@ class gameScreen extends Phaser.Scene{
 		this.input.keyboard.on("keyup-ESC", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
+			this.scene.pause('uiScreen');
 		});
 		//pauses the game
 		this.input.keyboard.on("keyup-P", () => {
 			this.scene.launch('pauseScreen');
 			this.scene.pause('gameScreen');
+			this.scene.pause('uiScreen');
 		});
 
 		this.soundController.playBGM();
@@ -116,7 +121,8 @@ class gameScreen extends Phaser.Scene{
 				this.smallAsteroids = [];
 				//increase wave?
 				this.level += 1;
-				this.hud.updateLevel(this.level);
+				//this.hud.updateLevel(this.level);
+				this.events.emit('level', this.level);
 				finalcount = this.level * this.asteroidIncrease;
 				spawnAsteroidWave(this, this.level + this.asteroidIncrease); //make the new asteroids a function of the level & whatever difficulty multiplier we want
 			}
@@ -150,8 +156,9 @@ function createColliders(scene) {
 				asteroid2.destroyAsteroid();
 				finalcount -= 2;
 				scene.score += scene.scoreIncrement;
-				scene.hud.updateScore(scene.score);
+				//scene.hud.updateScore(scene.score);
 
+				globalTHIS.events.emit('score', scene.score);
 				//create powerup
 				if(Math.floor(Math.random() * 5) === 0 && scene.player.tripleShot === false){
 					new TripleShot(scene, asteroid1.x, asteroid1.y);
@@ -175,7 +182,8 @@ function createColliders(scene) {
 			{
 				asteroid.destroyAsteroid();
 				scene.score += scene.scoreIncrement;
-				scene.hud.updateScore(scene.score);
+				//scene.hud.updateScore(scene.score);
+				globalTHIS.events.emit('score', scene.score);
 			}
 			else if(asteroid.getactivated() == false && asteroid.type!=0)
 			{
@@ -329,7 +337,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 	shipShooting() {
 		if (this.canShoot()) {
 			this.bulletTime = this.scene.time.now + this.bulletFrequency;
-			
+
 			if(this.tripleShot === true) {
 				new Blast(this.scene, this.angle, this.rotation);
                 new Blast(this.scene, this.angle + 45, this.rotation + 0.35);
@@ -372,10 +380,10 @@ class Blast extends Phaser.Physics.Arcade.Sprite {
         super(scene, x + offsetX, y + offsetY, "pewpew");
         scene.add.existing(this);
         scene.blasts.add(this);
-        
+
         //this.setAngle(scene.player.angle);
         this.setAngle(angle);
-        
+
         scene.physics.world.enableBody(this);
 
         scene.physics.velocityFromRotation(
@@ -537,7 +545,7 @@ class LargeAsteroid extends Asteroid {
 		Math.floor(Math.random() * 360),
 		Math.floor(Phaser.Math.Between(50,125))
 		);
-		
+
 		finalcount += 4;
 		this.destroy();
 	}
