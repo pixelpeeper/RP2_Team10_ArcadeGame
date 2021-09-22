@@ -3,7 +3,7 @@ var finalcount;
 var globalTHIS;
 var activeshockwave;
 var shockwavedelay;
-let playerlives = 3;
+var playerlives;
 var playerlifedeductordelay = true;
 //var SW;
 class gameScreen extends Phaser.Scene{
@@ -44,10 +44,13 @@ class gameScreen extends Phaser.Scene{
 	{
 		
 		shockwavedelay=true;
+		playerlives=2;
+		activeshockwave=false;
+		finalcount=null;
+		playerlifedeductordelay = true;
 		console.log('gameScreen creating');
 		globalTHIS = this;
 		this.scene.launch('uiScreen');
-		//globalTHIS.events.emit('level', 1);
 		//game parameters
 		this.score = 0;
 		this.scoreIncrement = 50;

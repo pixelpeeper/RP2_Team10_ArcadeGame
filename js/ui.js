@@ -68,7 +68,7 @@ class uiScreen extends Phaser.Scene {
 		})
 		.setScrollFactor(0);
 
-		this.levelText = this.add.text(140, 60, "1", {
+		this.levelText = this.add.text(140, 60, "4", {
 			font: "36px Sans-Serif",
 			color:'#00ff00',
 			fontFamily: 'Arial',
