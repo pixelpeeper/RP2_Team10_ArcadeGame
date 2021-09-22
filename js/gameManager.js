@@ -201,7 +201,7 @@ function spawnAsteroidWave(scene, level) {
 }
 
 function spawnDusts(scene,quantity, x, y) {
-	scene.dustController.genDust(globalTHIS.scene, quantity, x, y)
+	globalTHIS.dustController.genDust(globalTHIS.scene, quantity, x, y)
 
 	//new dust(
 	//	this.scene,
