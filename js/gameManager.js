@@ -3,6 +3,8 @@ var finalcount;
 var globalTHIS;
 var activeshockwave;
 var shockwavedelay;
+let playerlives = 3;
+var playerlifedeductordelay = true;
 //var SW;
 class gameScreen extends Phaser.Scene{
 	constructor(){
@@ -40,6 +42,7 @@ class gameScreen extends Phaser.Scene{
 
 	create ()
 	{
+		
 		shockwavedelay=true;
 		console.log('gameScreen creating');
 		globalTHIS = this;
@@ -280,22 +283,34 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 	killPlayer(player, asteroid, scene) {
 		if (this.playerAlive) {
+			console.log(playerlives)
 			//play death animation
-
+			 if(playerlives>0 && playerlifedeductordelay==true)
+			 {
+			 playerlifedeductordelay=false;
+			 if(playerlives==3)
+			 {this.setTint(0xffbdbd);}
+			 else if(playerlives==2)
+			 {this.setTint(0xff7d7d);}
+			 else if(playerlives==1)
+			 {this.setTint(0xff0000);}
+			 spawnDusts(scene,50, this.x, this.y);
+			 asteroid.destroyAsteroid();
+			 //invincibility for some time after getting hit.
+			 this.time = scene.time.addEvent({
+				delay: 1000,
+				callback: () => {
+					playerlives--;
+					playerlifedeductor();
+					},
+				scope: this
+			});
+			 }
+			 else if(playerlives<=0)
+			{
 			spawnDusts(scene,50, this.x, this.y)
 			//destroy asteroid
 			asteroid.destroyAsteroid();
-
-
-			//use a delay before destroying the player object
-			// this.on(
-			//     "animationcomplete",
-			//     () => {
-			//     this.destroy();
-			//     },
-			//     scene
-			// );
-
 			this.time = scene.time.addEvent({
 				delay: 1500,
 				callback: () => {
@@ -307,10 +322,25 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 				scope: this
 			});
 			this.destroy();
+			this.playerAlive = false;
+			}
+			
+
+
+			//use a delay before destroying the player object
+			// this.on(
+			//     "animationcomplete",
+			//     () => {
+			//     this.destroy();
+			//     },
+			//     scene
+			// );
+
+			
 		}
 
 		this.tripleShot = false;
-		this.playerAlive = false;
+		
 	}
 
 	shipMovement() {
@@ -950,4 +980,8 @@ function overlapAOE(shockwave, asteroid)
 {
 	asteroid.destroyAsteroid();
 	//asteroid.setVelocity(-asteroid.body.velocity.x  * 2, -asteroid.body.velocity.y * 2);
+}
+function playerlifedeductor()
+{
+	playerlifedeductordelay = true;
 }
