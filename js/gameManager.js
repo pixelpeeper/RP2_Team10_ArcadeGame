@@ -333,7 +333,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			shockwavedelay = false;
 			activeshockwave = new Shockwave(this.scene);
 			this.time = this.scene.time.addEvent({
-				delay: 2000,
+				delay: 8000,
 				callback: () => {settrue();},
 				scope: this
 			});
@@ -361,7 +361,7 @@ class Shockwave extends Phaser.Physics.Arcade.Sprite {
 		this.setMass(10);
 		this.setScale(scalex,scaley);
 		this.time = scene.time.addEvent({
-			delay: 6000,
+			delay: 400 ,
 			callback: () => {this.destroy();},
 			scope: this
 		});
