@@ -292,9 +292,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			 {
 			 playerlifedeductordelay=false;
 			 if(playerlives==3)
-			 {this.setTint(0xffbdbd);}
+			 {this.setTint(0xFFFFFF);}
 			 else if(playerlives==2)
-			 {this.setTint(0xff7d7d);}
+			 {this.setTint(0xFFFF00);}
 			 else if(playerlives==1)
 			 {this.setTint(0xff0000);}
 			 spawnDusts(scene,50, this.x, this.y);
