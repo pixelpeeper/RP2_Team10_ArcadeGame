@@ -47,6 +47,8 @@ class menuScreen extends Phaser.Scene {
 		this.turnRight = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.44	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		this.thrust = 		this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.35	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		this.thrust = 		this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.special = 		this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.44,	'Shockwave', 		{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.special = 		this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.44,	'Shockwave', 		{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		
 		//flashing text
 		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'Press ENTER to Start', {font:'80px Sans-Serif',color:'#EAD718',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
@@ -130,7 +132,7 @@ class menuScreen extends Phaser.Scene {
 		//credits
 		this.credits = this.add.text(gameDimentions.x/2,gameDimentions.y * 0.0694,'Credits:', {font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,1);
 		this.credits = this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Artist\nEngineer\nEngineer\nProduction\nTech Artist', {font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial',align:'right'}).setOrigin(1,0);
-		this.credits = this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Kaisen Xue\nJohnathan Conger\nPranav Bhatt\nMykaela Parag\nAvery Byers', {font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0,0);
+		this.credits = this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.0104,gameDimentions.y * 0.0694,'Kaisen Xue\nJonathan Conger\nPranav Bhatt\nMykaela Parag\nAvery Byers', {font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0,0);
 	
 	}
 	update(time, delta){
