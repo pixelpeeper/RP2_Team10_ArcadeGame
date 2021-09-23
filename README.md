@@ -1,5 +1,6 @@
-# RP2_Team10_ArcadeGame
-#Blastroids
+# Blastroids
+### Rapid Prototype 2 Team 10!
+
 Blastroids is a modern and innovative take on the 1970 arcade classic, Asteroids! Now, players must use their Blastwave weapon to push the asteroids into each other in order to destroy them!
 
 Published at [itch.io/blastroids](https://astoya.itch.io/blastroids)
