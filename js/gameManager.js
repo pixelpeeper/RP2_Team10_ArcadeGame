@@ -89,6 +89,7 @@ class gameScreen extends Phaser.Scene{
 		this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
 		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+		this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 
 		//this.input.keyboard.on("keydown_ESCAPE", () => {
 		//	if (!this.player.playerAlive)
@@ -399,7 +400,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 			//play blast sound
 			this.scene.soundController.playGun();
 		}
-		else if(this.scene.cursors.down.isDown && shockwavedelay==true)
+		else if((this.scene.cursors.down.isDown || this.scene.keyS.isDown) && shockwavedelay==true)
 		{
 			shockwavedelay = false;
 			globalTHIS.events.emit('shockwave', shockwavedelay);
