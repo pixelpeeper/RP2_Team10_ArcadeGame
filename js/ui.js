@@ -76,6 +76,22 @@ class uiScreen extends Phaser.Scene {
 		})
 		.setScrollFactor(0);
 		
+		//this.shockwave = this.add.text(20, 60, "Shokwave:", {
+		//	font: "36px Sans-Serif",
+		//	color:'#EAD718',
+		//	fontFamily: 'Arial',
+		//	align:'left'
+		//})
+		//.setScrollFactor(0);
+
+		this.shockwaveText = this.add.text(20, 100, "Shockwave Available", {
+			font: "36px Sans-Serif",
+			color:'#EAD718',
+			fontFamily: 'Arial',
+			align:'left'
+		})
+		.setScrollFactor(0);
+		
 		
 		
 		// HUD scene
@@ -84,6 +100,13 @@ class uiScreen extends Phaser.Scene {
 		});
 		this.scene.get('gameScreen').events.on('score', function(newScore) {
 			localTHIS.scoreText.setText(newScore);
+		});
+		this.scene.get('gameScreen').events.on('shockwave', function(newShokwaveStatus) {
+			if (newShokwaveStatus) {
+				localTHIS.shockwaveText.setText('Shockwave Available');
+			} else {
+				localTHIS.shockwaveText.setText('');
+			}
 		});
 		
 		
