@@ -8,7 +8,7 @@ class menuScreen extends Phaser.Scene {
 	
 	preload(){
 		console.log('menu loading');
-		this.load.image('menuBackground', 'images/background.jpg');
+		//this.load.image('menuBackground', 'images/backgroundGame.png');
 		this.load.image('title', 'iamges/title.png');
 		this.load.image('controls', 'images/ANSI.png');
 		this.load.svg('wasd_w', 'images/wasd_w.svg');
@@ -28,7 +28,7 @@ class menuScreen extends Phaser.Scene {
 		gameDimentions.y = this.sys.game.canvas.height;
 		console.log(gameDimentions)
 		//background
-		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
+		//this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
 		
 		this.title = this.add.text(gameDimentions.x/2, 	gameDimentions.y/2	- gameDimentions.y * 0.125, 	'Blastroids', {font:'160px Sans-Serif',fontStyle: 'bold',color:'#00ff00',stroke: '#00ff00',strokeThickness: 0,fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
 		

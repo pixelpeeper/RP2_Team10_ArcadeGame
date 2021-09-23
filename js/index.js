@@ -5,6 +5,7 @@ var config = {
     width: 1920,
     height: 1440,
 	antialias: true,
+	"transparent" : true,
 	scale: {
         mode: Phaser.Scale.FIT
     },
@@ -13,7 +14,7 @@ var config = {
         arcade: {
             fps: 60,
             gravity: { y: 0 },
-            debug: true,
+            debug: false,
             debugShowBody: true,
             debugShowAngularVelocity: true,
             debugAngularVelocityColor: 0xffff00,
@@ -35,7 +36,6 @@ var game = new Phaser.Game(config);
 console.log('index.js complete');
 
 var highScore = 0;
-
 
 class TweenHelper {
     static flashElement(scene, element, repeat = true, easing = 'sine.inout', overallDuration = 750, visiblePauseDuration = 250) {

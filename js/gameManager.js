@@ -15,6 +15,7 @@ class gameScreen extends Phaser.Scene{
 	{
 		console.log('gameScreen loading assets');
 
+		this.load.image('menuBackground', 'images/backgroundGame.png');
 		// visual assets
 		this.load.svg('ship', 'images/ship.svg');
 		this.load.svg('pewpew', 'images/pewpew.svg');
@@ -43,6 +44,7 @@ class gameScreen extends Phaser.Scene{
 	create ()
 	{
 		
+		this.background = this.add.image(gameDimentions.x/2,gameDimentions.y/2, 'menuBackground').setOrigin(0.5,0.5);
 		shockwavedelay=true;
 		playerlives=2;
 		activeshockwave=false;
