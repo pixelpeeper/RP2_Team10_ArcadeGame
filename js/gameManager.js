@@ -46,7 +46,7 @@ class gameScreen extends Phaser.Scene{
 		shockwavedelay=true;
 		playerlives=2;
 		activeshockwave=false;
-		finalcount=null;
+		finalcount=undefined;
 		playerlifedeductordelay = true;
 		console.log('gameScreen creating');
 		globalTHIS = this;
@@ -83,6 +83,9 @@ class gameScreen extends Phaser.Scene{
 		this.soundController = new SoundController(this);
 		//this.hud = new HUD(this);
 		this.cursors = this.input.keyboard.createCursorKeys();
+		this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+		this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+		this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
 		//this.input.keyboard.on("keydown_ESCAPE", () => {
 		//	if (!this.player.playerAlive)
@@ -158,6 +161,7 @@ function createColliders(scene) {
 	scene.physics.add.collider(scene.players, scene.asteroids, function (player, asteroid){
 		scene.soundController.playCollision();
 		scene.player.killPlayer(player, asteroid, scene);
+		scene.bgm.stop();
 	});
 
 	//add collisions for asteroids and asteroids
@@ -348,7 +352,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 	shipMovement() {
 		// check for forward movement
-		if (this.scene.cursors.up.isDown)
+		if (this.scene.cursors.up.isDown || this.scene.keyW.isDown)
 		{
 			this.scene.physics.velocityFromRotation(
 				this.scene.player.rotation,
@@ -363,11 +367,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		}
 
 		// check for rotation
-		if (this.scene.cursors.left.isDown)
+		if (this.scene.cursors.left.isDown || this.scene.keyA.isDown)
 		{
 			this.scene.player.setAngularVelocity(-300);
 		}
-		else if (this.scene.cursors.right.isDown)
+		else if (this.scene.cursors.right.isDown || this.scene.keyD.isDown)
 		{
 			this.scene.player.setAngularVelocity(300);
 		}
