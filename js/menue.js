@@ -9,8 +9,6 @@ class menuScreen extends Phaser.Scene {
 	preload(){
 		console.log('menu loading');
 		//this.load.image('menuBackground', 'images/backgroundGame.png');
-		this.load.image('title', 'iamges/title.png');
-		this.load.image('controls', 'images/ANSI.png');
 		this.load.svg('wasd_w', 'images/wasd_w.svg');
 		this.load.svg('wasd_a', 'images/wasd_a.svg');
 		this.load.svg('wasd_s', 'images/wasd_s.svg');
