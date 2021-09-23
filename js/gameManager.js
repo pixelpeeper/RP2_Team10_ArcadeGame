@@ -24,6 +24,7 @@ class gameScreen extends Phaser.Scene{
 		this.load.svg('asteroidsmall', 'images/asteroid3.svg');
 		this.load.svg('dust', 'images/dust.svg');
 		this.load.svg('circle', 'images/circle.svg');
+		this.load.svg('tripleshot', 'images/tripleshot.svg');
 		// audio assets
 		this.load.audio('bgm', 'audio/BG_Music.mp3');
 		// player sounds
