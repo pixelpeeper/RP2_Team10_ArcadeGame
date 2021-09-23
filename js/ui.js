@@ -84,13 +84,24 @@ class uiScreen extends Phaser.Scene {
 		//})
 		//.setScrollFactor(0);
 
-		this.shockwaveText = this.add.text(20, 100, "Shockwave Available", {
+		//this.shockwaveText = this.add.text(20, 100, "Shockwave Available", {
+		//	font: "36px Sans-Serif",
+		//	color:'#EAD718',
+		//	fontFamily: 'Arial',
+		//	align:'left'
+		//})
+		//.setScrollFactor(0);
+		
+		//flashing text
+		this.shockwaveText = this.add.text(20, 100, 'Shockwave Available', {
 			font: "36px Sans-Serif",
 			color:'#EAD718',
 			fontFamily: 'Arial',
 			align:'left'
 		})
 		.setScrollFactor(0);
+		TweenHelper.flashElement(this, this.shockwaveText);
+		
 		
 		
 		
