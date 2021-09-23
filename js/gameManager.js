@@ -395,6 +395,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 		else if(this.scene.cursors.down.isDown && shockwavedelay==true)
 		{
 			shockwavedelay = false;
+			globalTHIS.events.emit('shockwave', shockwavedelay);
 			activeshockwave = new Shockwave(this.scene);
 			this.time = this.scene.time.addEvent({
 				delay: 8000,
@@ -978,6 +979,7 @@ class SoundController {
 function settrue()
 {
 	shockwavedelay=true;
+	globalTHIS.events.emit('shockwave', shockwavedelay);
 }
 function overlapAOE(shockwave, asteroid)
 {
