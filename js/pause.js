@@ -46,16 +46,16 @@ class pauseScreen extends Phaser.Scene {
 		this.controlls_arrows_left = 	this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_left');
 		this.controlls_arrows_right = 	this.add.image(gameDimentions.x/2 + gameDimentions.x * 0.33, 	gameDimentions.y/2			+ gameDimentions.y * 0.34722, 	'arrows_right');
 		//key binding lables
-		this.pewpew = 		this.add.text(gameDimentions.x/2							,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Pew Pew Lazers', 	{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.turnLeft = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.45	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Left', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.turnLeft = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Left', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.turnRight = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.turnRight = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.44	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.thrust = 		this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.35	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
-		this.thrust = 		this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#00ff00',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.pewpew = 		this.add.text(gameDimentions.x/2							,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Pew Pew Lazers', 	{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnLeft = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.45	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Left', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnLeft = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Left', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnRight = 	this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.21	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.turnRight = 	this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.44	,gameDimentions.y/2 + gameDimentions.y * 0.38194,'Right', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.thrust = 		this.add.text(gameDimentions.x/2 - gameDimentions.x * 0.35	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
+		this.thrust = 		this.add.text(gameDimentions.x/2 + gameDimentions.x * 0.33	,gameDimentions.y/2 + gameDimentions.y * 0.25,	'Thrust', 			{font:'40px Sans-Serif',color:'#EAD718',fontFamily: 'Arial'}).setOrigin(0.5,0.5);
 		
 		
-		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'GAME PAUSED', {font:'80px Sans-Serif',color:'#00ff00',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
+		const screenText = this.add.text(gameDimentions.x/2,gameDimentions.y/2, 'GAME PAUSED', {font:'80px Sans-Serif',color:'#EAD718',fontFamily: 'Arial',align:'center'}).setOrigin(0.5,0.5);
 		TweenHelper.flashElement(this, screenText);
 		
 		//this.input.on('pointerup', function () {
